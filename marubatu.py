@@ -16,6 +16,8 @@ LINE_WIDTH = 5
 
 display_surface.fill(BLACK)
 
+pygame.draw.rectI(display_surface, WHITE, (100, 100, 300, 300), LINE_WIDTH)
+
 running = True
 
 while running:
