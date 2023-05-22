@@ -16,11 +16,20 @@ LINE_WIDTH = 5
 
 display_surface.fill(BLACK)
 
+pygame.draw.rect(display_surface, WHITE, (100, 100, 300, 300), LINE_WIDTH)
+
+pygame.draw.line(display_surface, WHITE, (200, 100), (200, 399), LINE_WIDTH)
+pygame.draw.line(display_surface, WHITE, (300, 100), (300, 399), LINE_WIDTH)
+pygame.draw.line(display_surface, WHITE, (100, 200), (399, 200), LINE_WIDTH)
+pygame.draw.line(display_surface, WHITE, (100, 300), (399, 300), LINE_WIDTH)
+
 running = True
 
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+    
+    pygame.display.update()
 
 pygame.quit()
