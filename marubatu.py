@@ -23,6 +23,9 @@ pygame.draw.line(display_surface, WHITE, (300, 100), (300, 399), LINE_WIDTH)
 pygame.draw.line(display_surface, WHITE, (100, 200), (399, 200), LINE_WIDTH)
 pygame.draw.line(display_surface, WHITE, (100, 300), (399, 300), LINE_WIDTH)
 
+FPS = 60
+clock = pygame.time.Clock()
+
 running = True
 
 while running:
@@ -31,5 +34,7 @@ while running:
             running = False
     
     pygame.display.update()
+
+    clock.tick(FPS)
 
 pygame.quit()
