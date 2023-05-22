@@ -2,7 +2,10 @@ import pygame
 
 pygame.init()
 
-display_surface = pygame.display.set_mode((500, 500))
+WINDOW_WIDTH = 500
+WINDOW_HEIGHT = 500
+
+display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
 running = True
 
