@@ -7,6 +7,8 @@ WINDOW_HEIGHT = 500
 
 display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
+pygame.display.set_caption('〇×ゲーム')
+
 running = True
 
 while running:
