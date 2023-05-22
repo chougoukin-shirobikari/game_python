@@ -26,6 +26,16 @@ pygame.draw.line(display_surface, WHITE, (100, 300), (399, 300), LINE_WIDTH)
 FPS = 60
 clock = pygame.time.Clock()
 
+title_font = pygame.font.SysFont('hg丸ｺﾞｼｯｸmpro', 50)
+
+title = title_font.render("〇×ゲーム", True, WHITE)
+
+title_font_rect = title.get_rect()
+
+title_font_rect.center = (WINDOW_WIDTH // 2, 50)
+
+display_surface.blit(title, title_font_rect)
+
 running = True
 
 while running:
