@@ -36,6 +36,12 @@ def init():
 
 init()
 
+game = [[''] * 3 for _ in range(3)]
+
+print(game)
+
+[print(i) for i in game]
+
 running = True
 
 while running:
