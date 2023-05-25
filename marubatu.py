@@ -19,6 +19,11 @@ display_surface.fill(BLACK)
 FPS = 60
 clock = pygame.time.Clock()
 
+font = pygame.font.SysFont('hg丸ｺﾞｼｯｸmpro', 80)
+maru_font = font.render("〇", True, WHITE)
+batu_font = font.render("×", True, WHITE)
+blank_font = font.render("", True, WHITE)
+
 def init():
     pygame.draw.rect(display_surface, WHITE, (100, 100, 300, 300), LINE_WIDTH)
 
