@@ -40,6 +40,10 @@ game = [[''] * 3 for _ in range(3)]
 
 def mouseCheck(x, y):
     mouse_click_y, mouse_click_x = y // 100, x // 100
+
+    mouse_click_y -= 1
+    mouse_click_x -= 1
+    
     print(mouse_click_y, mouse_click_x)
 
 running = True
