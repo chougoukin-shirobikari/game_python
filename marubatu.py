@@ -38,9 +38,9 @@ init()
 
 game = [[''] * 3 for _ in range(3)]
 
-print(game)
-
-[print(i) for i in game]
+def mouseCheck(x, y):
+    mouse_click_y, mouse_click_x = y // 100, x // 100
+    print(mouse_click_y, mouse_click_x)
 
 running = True
 
@@ -52,7 +52,7 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouseX = event.pos[0]
             mouseY = event.pos[1]
-            print(mouseY, mouseX)
+            mouseCheck(mouseX, mouseY)
     
     pygame.display.update()
 
