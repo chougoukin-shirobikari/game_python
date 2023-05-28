@@ -49,7 +49,7 @@ def mouseCheck(x, y):
     mouse_click_y -= 1
     mouse_click_x -= 1
 
-    print(mouse_click_y, mouse_click_x)
+    print('枠の中を打った')
 
 running = True
 
