@@ -26,6 +26,8 @@ blank_font = font.render("", True, WHITE)
 
 player = 0
 
+gameStop = False
+
 def init():
     pygame.draw.rect(display_surface, WHITE, (100, 100, 300, 300), LINE_WIDTH)
 
@@ -116,6 +118,8 @@ def gameClear(victory, victory_message):
     gameclear_font_rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
     display_surface.blit(gameclear, gameclear_font_rect)
 
+    pygame.display.update()
+
 running = True
 
 while running:
@@ -189,6 +193,24 @@ while running:
                     gameClear(ans, '引き分け')
                 else:
                     gameClear(ans, f'{ans}の勝ち')
+            
+                gameStop = True
+
+                while gameStop:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            gameStop = False
+                            running = False
+                        
+                        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                            display_surface.fill(BLACK)
+                            init()
+
+                            game = [[''] * 3 for _ in range(3)]
+
+                            player = 0
+
+                            gameStop = False
 
     pygame.display.update()
 
