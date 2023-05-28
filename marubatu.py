@@ -79,6 +79,24 @@ while running:
             
             if waku_check:
                 continue
+
+            if 100 <= mouseX <= 100 + LINE_WIDTH:
+                print('大枠の左を打った')
+                waku_check = True
+            if 100 + 300 - LINE_WIDTH <= mouseX <= 100 + 300:
+                print('大枠の右を打った')
+                waku_check = True
+            if 100 <= mouseY <= 100 + LINE_WIDTH:
+                print('大枠の上を打った')
+                waku_check = True
+            if 100 + 300 - LINE_WIDTH <= mouseY <= 100 + 300:
+                print('大枠の下を打った')
+                waku_check = True
+            
+            if waku_check:
+                continue
+
+            pygame.draw.rect(display_surface, WHITE, (100, 100, 300, 300), LINE_WIDTH)
             
             mouseCheck(mouseX, mouseY)
 
