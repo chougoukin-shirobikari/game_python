@@ -103,6 +103,19 @@ def gameCheck():
     else:
         return -1
 
+def gameClear(victory, victory_message):
+    judgement_font = pygame.font.SysFont('hg丸ｺﾞｼｯｸmpro', 65)
+    judgement = judgement_font.render(victory_message, True, WHITE)
+    judgement_font_rect = judgement.get_rect()
+    judgement_font_rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT - 50)
+    display_surface.blit(judgement, judgement_font_rect)
+
+    gameclear_font = pygame.font.SysFont('hg丸ｺﾞｼｯｸmpro', 35)
+    gameclear = gameclear_font.render('再プレイ：スペースキーを押す', True, BLACK, WHITE)
+    gameclear_font_rect = gameclear.get_rect()
+    gameclear_font_rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
+    display_surface.blit(gameclear, gameclear_font_rect)
+
 running = True
 
 while running:
@@ -148,7 +161,6 @@ while running:
             if waku_check:
                 continue
 
-            #pygame.draw.rect(display_surface, WHITE, (100, 100, 300, 300), LINE_WIDTH)
 
             line_width_half = LINE_WIDTH // 2 + 1
 
@@ -172,12 +184,11 @@ while running:
 
             ans = gameCheck()
             
-            if ans == '〇' or ans == '×':
-                print(f'{ans}の勝ち')
-                running = False
-            elif ans == 0:
-                print('引き分け')
-                running = False
+            if ans != -1:
+                if ans == 0:
+                    gameClear(ans, '引き分け')
+                else:
+                    gameClear(ans, f'{ans}の勝ち')
 
     pygame.display.update()
 
