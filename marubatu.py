@@ -48,7 +48,7 @@ def mouseCheck(x, y):
 
     mouse_click_y -= 1
     mouse_click_x -= 1
-    
+
     print(mouse_click_y, mouse_click_x)
 
 running = True
@@ -61,8 +61,27 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouseX = event.pos[0]
             mouseY = event.pos[1]
+            
+            waku_check = False
+
+            if mouseX < 100:
+                print('大枠より左を打った')
+                waku_check = True
+            if mouseX > 400:
+                print('大枠より右を打った')
+                waku_check = True
+            if mouseY < 100:
+                print('大枠より上を打った')
+                waku_check = True
+            if mouseY > 400:
+                print('大枠より下を打った')
+                waku_check = True
+            
+            if waku_check:
+                continue
+            
             mouseCheck(mouseX, mouseY)
-    
+
     pygame.display.update()
 
     clock.tick(FPS)
