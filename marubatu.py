@@ -96,7 +96,25 @@ while running:
             if waku_check:
                 continue
 
-            pygame.draw.rect(display_surface, WHITE, (100, 100, 300, 300), LINE_WIDTH)
+            #pygame.draw.rect(display_surface, WHITE, (100, 100, 300, 300), LINE_WIDTH)
+
+            line_width_half = LINE_WIDTH // 2 + 1
+
+            if 200 - line_width_half <= mouseX <= 200 + line_width_half:
+                print('枠1を打った')
+                waku_check = True
+            if 300 - line_width_half <= mouseX <= 300 + line_width_half:
+                print('枠2を打った')
+                waku_check = True
+            if 200 - line_width_half <= mouseY <= 200 + line_width_half:
+                print('枠3を打った')
+                waku_check = True
+            if 300 - line_width_half <= mouseY <= 300 + line_width_half:
+                print('枠4を打った')
+                waku_check = True
+            
+            if waku_check:
+                continue
             
             mouseCheck(mouseX, mouseY)
 
