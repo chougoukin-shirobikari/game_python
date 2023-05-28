@@ -24,6 +24,8 @@ maru_font = font.render("〇", True, WHITE)
 batu_font = font.render("×", True, WHITE)
 blank_font = font.render("", True, WHITE)
 
+player = 0
+
 def init():
     pygame.draw.rect(display_surface, WHITE, (100, 100, 300, 300), LINE_WIDTH)
 
@@ -44,15 +46,24 @@ init()
 game = [[''] * 3 for _ in range(3)]
 
 def mouseCheck(x, y):
+    global player
+
     mouse_click_y, mouse_click_x = y // 100, x // 100
 
     mouse_click_y -= 1
     mouse_click_x -= 1
 
-    game[mouse_click_y][mouse_click_x] = '〇'
+    if game[mouse_click_y][mouse_click_x] == '':
+        if player == 0:
+            game[mouse_click_y][mouse_click_x] = '〇'
 
-    display_surface.blit(maru_font, ((mouse_click_x + 1) * 100 + 10, (mouse_click_y + 1) * 100 + 10))
-
+            display_surface.blit(maru_font, ((mouse_click_x + 1) * 100 + 10, (mouse_click_y + 1) * 100 + 10))
+        
+        elif player == 1:
+            game[mouse_click_y][mouse_click_x] = '×'
+            display_surface.blit(batu_font, ((mouse_click_x + 1) * 100 + 10, (mouse_click_y + 1) * 100 + 10))
+    
+        player = (player + 1) % 2
 
 running = True
 
