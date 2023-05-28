@@ -49,7 +49,10 @@ def mouseCheck(x, y):
     mouse_click_y -= 1
     mouse_click_x -= 1
 
-    print('枠の中を打った')
+    game[mouse_click_y][mouse_click_x] = '〇'
+
+    display_surface.blit(maru_font, ((mouse_click_x + 1) * 100 + 10, (mouse_click_y + 1) * 100 + 10))
+
 
 running = True
 
