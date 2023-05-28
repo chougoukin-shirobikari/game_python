@@ -65,6 +65,44 @@ def mouseCheck(x, y):
     
         player = (player + 1) % 2
 
+def gameCheck():
+    if game[0][0] == game[0][1] == game[0][2] == '〇':
+        return '〇'
+    elif game[0][0] == game[0][1] == game[0][2] == '×':
+        return '×'
+    elif game[1][0] == game[1][1] == game[1][2] == '〇':
+        return '〇'
+    elif game[1][0] == game[1][1] == game[1][2] == '×':
+        return '×'
+    elif game[2][0] == game[2][1] == game[2][2] == '〇':
+        return '〇'
+    elif game[2][0] == game[2][1] == game[2][2] == '×':
+        return '×'
+    elif game[0][0] == game[1][0] == game[2][0] == '〇':
+        return '〇'
+    elif game[0][0] == game[1][0] == game[2][0] == '×':
+        return '×'
+    elif game[0][1] == game[1][1] == game[2][1] == '〇':
+        return '〇'
+    elif game[0][1] == game[1][1] == game[2][1] == '×':
+        return '×'
+    elif game[0][2] == game[1][2] == game[2][2] == '〇':
+        return '〇'
+    elif game[0][2] == game[1][2] == game[2][2] == '×':
+        return '×'
+    elif game[0][0] == game[1][1] == game[2][2] == '〇':
+        return '〇'
+    elif game[0][0] == game[1][1] == game[2][2] == '×':
+        return '×'
+    elif game[0][2] == game[1][1] == game[2][0] == '〇':
+        return '〇'
+    elif game[0][2] == game[1][1] == game[2][0] == '×':
+        return '×'
+    elif '' not in sum(game, []):
+        return 0
+    else:
+        return -1
+
 running = True
 
 while running:
@@ -131,6 +169,15 @@ while running:
                 continue
             
             mouseCheck(mouseX, mouseY)
+
+            ans = gameCheck()
+            
+            if ans == '〇' or ans == '×':
+                print(f'{ans}の勝ち')
+                running = False
+            elif ans == 0:
+                print('引き分け')
+                running = False
 
     pygame.display.update()
 
