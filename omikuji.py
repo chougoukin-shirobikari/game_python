@@ -15,10 +15,15 @@ YELLOW = (255, 255, 0)
 
 display_surface.fill(BLACK)
 
+FPS = 60
+clock = pygame.time.Clock()
+
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+    
+    clock.tick(FPS)
 
 pygame.quit()
