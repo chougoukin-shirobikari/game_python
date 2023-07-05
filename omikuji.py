@@ -2,7 +2,10 @@ import pygame
 
 pygame.init()
 
-display_surface = pygame.display.set_mode((400, 600))
+WINDOW_WIDTH = 400
+WINDOW_HEIGHT = 600
+
+display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
 pygame.display.set_caption("おみくじ")
 
