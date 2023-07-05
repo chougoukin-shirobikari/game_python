@@ -18,6 +18,8 @@ display_surface.fill(BLACK)
 FPS = 60
 clock = pygame.time.Clock()
 
+button = pygame.Rect(100, 100, 200, 300)
+
 running = True
 while running:
     for event in pygame.event.get():
