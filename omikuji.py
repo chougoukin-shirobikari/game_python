@@ -20,6 +20,8 @@ clock = pygame.time.Clock()
 
 button = pygame.Rect(100, 100, 200, 300)
 
+font = pygame.font.SysFont('hg丸ｺﾞｼｯｸmpro', 80)
+
 running = True
 while running:
     for event in pygame.event.get():
