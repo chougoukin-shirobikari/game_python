@@ -30,6 +30,10 @@ while running:
         if event.type == pygame.QUIT:
             running = False
     
+    pygame.draw.rect(display_surface, WHITE, button)
+
+    pygame.display.update()
+    
     clock.tick(FPS)
 
 pygame.quit()
