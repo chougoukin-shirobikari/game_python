@@ -18,7 +18,7 @@ display_surface.fill(BLACK)
 FPS = 60
 clock = pygame.time.Clock()
 
-button = pygame.Rect(100, 100, 200, 300)
+button = pygame.Rect(100, 200, 200, 300)
 
 font = pygame.font.SysFont('hg丸ｺﾞｼｯｸmpro', 80)
 
