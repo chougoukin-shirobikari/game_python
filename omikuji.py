@@ -22,6 +22,8 @@ button = pygame.Rect(100, 100, 200, 300)
 
 font = pygame.font.SysFont('hg丸ｺﾞｼｯｸmpro', 80)
 
+text = font.render("おみくじ", True, WHITE)
+
 running = True
 while running:
     for event in pygame.event.get():
