@@ -20,9 +20,10 @@ clock = pygame.time.Clock()
 
 button = pygame.Rect(100, 200, 200, 300)
 
-font = pygame.font.SysFont('hg丸ｺﾞｼｯｸmpro', 80)
+font = pygame.font.SysFont('hg丸ｺﾞｼｯｸmpro', 30
+                           )
 
-text = font.render("おみくじ", True, WHITE)
+text = font.render("おみくじ", True, BLACK)
 
 running = True
 while running:
@@ -31,6 +32,8 @@ while running:
             running = False
     
     pygame.draw.rect(display_surface, WHITE, button)
+
+    display_surface.blit(text, (140, 300))
 
     pygame.display.update()
     
