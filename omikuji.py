@@ -12,6 +12,8 @@ pygame.display.set_caption("おみくじ")
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 YELLOW = (255, 255, 0)
+BROWN = (116, 80, 48)
+DARK_BROWN = (78, 53, 36)
 
 display_surface.fill(BLACK)
 
@@ -20,7 +22,9 @@ clock = pygame.time.Clock()
 
 button = pygame.Rect(100, 200, 200, 300)
 
-font = pygame.font.SysFont('hg丸ｺﾞｼｯｸmpro', 80)
+button_cover = pygame.Rect(110, 210, 180, 280)
+
+font = pygame.font.SysFont('hg丸ｺﾞｼｯｸmpro', 30)
 
 text = font.render("おみくじ", True, WHITE)
 
@@ -30,7 +34,11 @@ while running:
         if event.type == pygame.QUIT:
             running = False
     
-    pygame.draw.rect(display_surface, WHITE, button)
+    pygame.draw.rect(display_surface, BROWN, button)
+
+    pygame.draw.rect(display_surface, DARK_BROWN, button_cover)
+
+    display_surface.blit(text, (140, 300))
 
     pygame.display.update()
     
