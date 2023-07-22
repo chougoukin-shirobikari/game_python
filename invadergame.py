@@ -120,6 +120,13 @@ def enemyGenerate(local_milliseconds_delay, local_enemy_move_x):
     pygame.time.set_timer(enemy_event, 0)
     pygame.time.set_timer(enemy_event, milliseconds_delay)
 
+def text_board(font, text, color, size, x, y):
+    font = pygame.font.SysFont(font, size)
+    textsurf = font.render(text, True, color)
+    textsurf_rect = textsurf.get_rect()
+    textsurf_rect.center = (x, y)
+    display_surface.blit(textsurf, textsurf_rect)
+
 
 running = True
 while running:
@@ -183,7 +190,28 @@ while running:
 
     for e in enemy_list:
         if e.gameOverCheck():
-            running = False
+            gameOver = True
+            text_board('hg丸ｺﾞｼｯｸmpro', f'倒した敵の数：{count}', WHITE, 50, WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 - 50)
+            text_board('hg丸ｺﾞｼｯｸmpro', f'再プレイ：sキーを押す', WHITE, 40, WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 30)
+            pygame.display.update()
+
+            while gameOver:
+                pygame.time.set_timer(enemy_event, 0)
+
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        gameOver = False
+                        running = False
+                    
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
+                        display_surface.fill(BLACK)
+                        player = Player(WINDOW_WIDTH // 2 - 25, WINDOW_HEIGHT - 50)
+                        enemy_move_x = -5
+                        enemy_list = [Enemy(WINDOW_WIDTH - 50, 0, enemy_move_x)]
+                        count = 0
+                        milliseconds_delay = 3000
+                        pygame.time.set_timer(enemy_event, milliseconds_delay)
+                        gameOver = False
 
     pygame.display.update()
     
