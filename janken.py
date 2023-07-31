@@ -23,9 +23,29 @@ def text_board(font, size, text, color, x, y):
     textsurf = font.render(text, True, color)
     textsurf_rect = textsurf.get_rect()
     textsurf_rect.center = (x, y)
-    display_surface.blit(textsurf, textsurf_rect)
+    
+    return (textsurf, textsurf_rect)
 
-text_board('meiryo', 50, "なにを選びますか？", WHITE, WINDOW_WIDTH // 2, WINDOW_HEIGHT - 150)
+choice, choice_rect = text_board('meiryo', 50, "なにを選びますか？", WHITE, WINDOW_WIDTH // 2, WINDOW_HEIGHT - 150)
+choice_gu, choice_gu_rect = text_board('meiryo', 60, "グー", WHITE, 100, WINDOW_HEIGHT - 50)
+choice_choki, choice_choki_rect = text_board('meiryo', 60, "チョキ", WHITE, 335, WINDOW_HEIGHT - 50)
+choice_pa, choice_pa_rect = text_board('meiryo', 60, "パー", WHITE, 550, WINDOW_HEIGHT - 50)
+
+win, win_rect = text_board('hgｺﾞｼｯｸe', 64, "あなたの勝ち！", YELLOW, WINDOW_WIDTH // 2, 80)
+lose, lose_rect = text_board('hgｺﾞｼｯｸe', 64, "あなたの負け", GRAY, WINDOW_WIDTH // 2, 80)
+draw, draw_rect = text_board('hgｺﾞｼｯｸe', 64, "引き分け", WHITE, WINDOW_WIDTH // 2, 80)
+
+continue_text, continue_rect = text_board('meiryo', 50, "続ける", WHITE, WINDOW_WIDTH // 2 - 100, WINDOW_HEIGHT - 100)
+quit_text, quit_rect = text_board('meiryo', 50, "やめる", WHITE, WINDOW_WIDTH // 2 + 100, WINDOW_HEIGHT - 100)
+
+player_gu, player_gu_rect = text_board('hgｺﾞｼｯｸe', 64, "グー", WHITE, 200, 250)
+player_choki, player_choki_rect = text_board('hgｺﾞｼｯｸe', 64, "チョキ", WHITE, 200, 250)
+player_pa, player_pa_rect = text_board('hgｺﾞｼｯｸe', 64, "パー", WHITE, 200, 250)
+
+opponent_gu, opponent_gu_rect = text_board('hgｺﾞｼｯｸe', 64, "グー", WHITE, 470, 250)
+opponent_choki, opponent_choki_rect = text_board('hgｺﾞｼｯｸe', 64, "チョキ", WHITE, 470, 250)
+opponent_pa, opponent_pa_rect = text_board('hgｺﾞｼｯｸe', 64, "パー", WHITE, 470, 250)
+
 
 running = True
 while running:
