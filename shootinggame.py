@@ -1,4 +1,4 @@
-import pygame
+import pygame,math
 
 
 pygame.init()
@@ -43,6 +43,24 @@ class Player(Object):
         self.x += dx * 8
         self.y += dy * 8
 
+        if dx != 0 and dy != 0:
+            dx = dx * (math.sqrt(2) / 2)
+            dy = dy * (math.sqrt(2) / 2)
+        
+        if 0 >= self.x + dx:
+            self.x = 0
+        elif self.x + dx >= WINDOW_WIDTH - self.width:
+            self.x = WINDOW_WIDTH - self.width
+        else:
+            self.x += dx
+        
+        if 0 >= self.y + dy:
+            self.y = 0
+        elif self.y + dy >= WINDOW_HEIGHT - self.height:
+            self.y = WINDOW_HEIGHT - self.height
+        else:
+            self.y += dy
+
 player = Player(10, 50, WHITE)
 
 player_up = False
@@ -50,8 +68,6 @@ player_down = False
 player_right = False
 player_left = False
 
-
-print(player.x, player.y, player.color, player.width, player.height)
 
 running = True
 
@@ -83,23 +99,21 @@ while running:
                 player_left = False
         
             
-        dx = 0
-        dy = 0
+    dx = 0
+    dy = 0
 
-        if player_up:
-            dy = -1
-        if player_down:
-            dy = 1
-        if player_right:
-            dx = 1
-        if player_left:
-            dx = -1
+    if player_up:
+        dy = -1
+    if player_down:
+        dy = 1
+    if player_right:
+        dx = 1
+    if player_left:
+        dx = -1
 
-        player.move(dx, dy)
-        print(dy, dx)
+    player.move(dx, dy)
             
     player.draw()
-            
 
     clock.tick(FPS)
 
