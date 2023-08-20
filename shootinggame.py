@@ -1,4 +1,4 @@
-import pygame, math, gc
+import pygame, math, gc, random
 
 pygame.init()
 
@@ -128,6 +128,32 @@ class Enemy(Object):
 
 player = Player(10, 50, WHITE, 0)
 
+enemy_event = pygame.USEREVENT + 0
+pygame.time.set_timer(enemy_event, 3000)
+
+enemy_shot_event = pygame.USEREVENT + 1
+pygame.time.set_timer(enemy_shot_event, 2000)
+
+enemy_list = []
+
+def enemy_move_check(e_list):
+    temp = []
+    delete_temp = []
+
+    for i in range(len(e_list)):
+        if e_list[i].move():
+            temp.append(e_list[i])
+        else:
+            delete_temp.append(e_list[i])
+    
+    e_list = temp
+
+    del delete_temp
+
+    gc.collect()
+
+    return e_list
+
 player_up = False
 player_down = False
 player_right = False
@@ -167,6 +193,21 @@ while running:
             if event.key == pygame.K_LEFT:
                 player_left = False
         
+        if event.type == enemy_event:
+            enemy_type = random.randrange(3)
+            enemy_list.append(Enemy(WINDOW_WIDTH, random.randrange(0, WINDOW_HEIGHT - 20), [RED, GREEN, BLUE][enemy_type], 0, enemy_type))
+    
+        if event.type == enemy_shot_event:
+            for e in enemy_list:
+                e.shotOn()
+
+    [e.draw() for e in enemy_list]
+
+    [e.move() for e in enemy_list]
+
+    [e.shotCheck() for e in enemy_list]
+
+    enemy_list = enemy_move_check(enemy_list)
             
     dx = 0
     dy = 0
