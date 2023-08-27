@@ -19,7 +19,7 @@ GRAY = (128, 128, 128)
 
 display_surface.fill(BLACK)
 
-FPS = 60
+FPS = 100
 clock = pygame.time.Clock()
 
 class Object():
@@ -131,7 +131,8 @@ class Enemy(Object):
             if not self.shot.shotUpdate():
                 self.shot = None
 
-player = Player(10, 50, WHITE, 0)
+#player = Player(10, 50, WHITE, 0)
+player = Player(10, WINDOW_HEIGHT // 2 - 10, WHITE, 0)
 
 enemy_event = pygame.USEREVENT + 0
 pygame.time.set_timer(enemy_event, 3000)
@@ -144,6 +145,11 @@ enemy_list = []
 enemy_delete_list = []
 
 background = []
+
+score = [0] * 3
+
+gameOver1 = gameOver2 = gameOver3 = False
+
 
 def make_background():
     while True:
@@ -192,8 +198,7 @@ def player_and_enemy_collision(player, enemy):
 def playerShot_and_enemy_collision(player, enemy):
     for playerShot in player.returnshotList():
         if playerShot.rect.colliderect(enemy.rect):
-            #del enemy
-            #gc.collect()
+            score[enemy.enemy_type] += 1
             enemy_delete_list.append(enemy)
             return True
         
@@ -218,6 +223,13 @@ player_up = False
 player_down = False
 player_right = False
 player_left = False
+
+def text_board(font, size, text, color, bgColor, x, y):
+    font = pygame.font.Font(font, size)
+    textsurf = font.render(text, True, color, bgColor)
+    textsurf_rect = textsurf.get_rect()
+    textsurf_rect.center = (x, y)
+    display_surface.blit(textsurf, textsurf_rect)
 
 
 running = True
@@ -293,6 +305,12 @@ while running:
             
     player.draw()
 
+    gameOver1 = any([player_and_enemy_collision(player, e) for e in enemy_list])
+
+    gameOver2 = any([player_and_enemyShot_collision(player, e) for e in enemy_list])
+
+    gameOver3 = any([player_and_enemyShot_collision(player, e_delete) for e_delete in enemy_delete_list])
+
     if any([player_and_enemy_collision(player, e) for e in enemy_list]):
         print('敵とぶつかった')
         running = False
@@ -306,6 +324,47 @@ while running:
         running = False
     
     enemy_list = [e for e in enemy_list if not playerShot_and_enemy_collision(player, e)]
+
+    while gameOver1 or gameOver2 or gameOver3:
+        pygame.time.set_timer(enemy_event, 0)
+        pygame.time.set_timer(enemy_shot_event, 0)
+
+        text_board('NotoSansJP-Regular.ttf', 30, f'RED:{score[0]} GREEN:{score[1]} BLUE:{score[2]}', BLACK, GRAY, WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 - 100)
+        text_board('NotoSansJP-Regular.ttf', 50, "再プレイ：スペースキーを押す", BLACK, GRAY, WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 100)
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                gameOver1 = gameOver2 = gameOver3 = False
+
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                display_surface.fill(BLACK)
+                
+                enemy_list = []
+                enemy_delete_list = []
+                background = []
+
+                for _ in range(30):
+                    make_background()
+
+                score = [0] * 3
+                gameOver1 = gameOver2 = gameOver3 = False
+
+                player_up = False
+                player_down = False
+                player_right = False
+                player_left = False
+
+                pygame.time.set_timer(enemy_event, 3000)
+                pygame.time.set_timer(enemy_shot_event, 2000)
+
+                player = Player(10, WINDOW_HEIGHT // 2 - 10, WHITE, 0)
+
+                gc.collect()
+
+                running = True
 
     clock.tick(FPS)
 
