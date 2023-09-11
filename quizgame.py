@@ -1,4 +1,5 @@
-import pygame
+import pygame, random
+from quizResource import quiz
 
 
 pygame.init()
@@ -32,6 +33,25 @@ class Game():
     
     def draw(self):
         pygame.draw.rect(display_surface, self.color, (self.x, self.y, self.width, self.height), self.line)
+    
+    def theQuestion(self):
+        number = 0
+        number = random.randrange(len(quiz))
+
+        question, answer1, answer2, answer3, answer4, questionAnswer, answerDescription = quiz[number]
+        
+        self.text_board('NotoSansJP-Regular.ttf', 30, question, WHITE, None, WINDOW_WIDTH // 2, 100)
+        self.text_board('NotoSansJP-Regular.ttf', 30, answer1, WHITE, None, WINDOW_WIDTH // 2, 240)
+        self.text_board('NotoSansJP-Regular.ttf', 30, answer2, WHITE, None, WINDOW_WIDTH // 2, 340)
+        self.text_board('NotoSansJP-Regular.ttf', 30, answer3, WHITE, None, WINDOW_WIDTH // 2, 440)
+        self.text_board('NotoSansJP-Regular.ttf', 30, answer4, WHITE, None, WINDOW_WIDTH // 2, 540)
+    
+    def text_board(self, font, size, text, color, bgColor, x, y):
+        font = pygame.font.Font(font, size)
+        textsurf = font.render(text, True, color, bgColor)
+        textsurf_rect = textsurf.get_rect()
+        textsurf_rect.center = (x, y)
+        display_surface.blit(textsurf, textsurf_rect)
 
 class Player(Game):
     def __init__(self, x, y):
@@ -57,6 +77,7 @@ class Player(Game):
 
 game = Game(10, 20, WINDOW_WIDTH - 20, 160)
 game.draw()
+game.theQuestion()
 
 answer1, answer2, answer3, answer4 = Game(50, 200), Game(50, 300), Game(50, 400), Game(50, 500)
 
