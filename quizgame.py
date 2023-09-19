@@ -44,10 +44,12 @@ class Game():
         question, self.answer1, self.answer2, self.answer3, self.answer4, self.questionAnswer, self.answerDescription = quiz[number]
         
         self.text_board('NotoSansJP-Regular.ttf', 30, question, WHITE, None, WINDOW_WIDTH // 2, 100)
-        self.text_board('NotoSansJP-Regular.ttf', 30, self.answer1, WHITE, None, WINDOW_WIDTH // 2, 240)
-        self.text_board('NotoSansJP-Regular.ttf', 30, self.answer2, WHITE, None, WINDOW_WIDTH // 2, 340)
-        self.text_board('NotoSansJP-Regular.ttf', 30, self.answer3, WHITE, None, WINDOW_WIDTH // 2, 440)
-        self.text_board('NotoSansJP-Regular.ttf', 30, self.answer4, WHITE, None, WINDOW_WIDTH // 2, 540)
+        #self.text_board('NotoSansJP-Regular.ttf', 30, self.answer1, WHITE, None, WINDOW_WIDTH // 2, 240)
+        #self.text_board('NotoSansJP-Regular.ttf', 30, self.answer2, WHITE, None, WINDOW_WIDTH // 2, 340)
+        #self.text_board('NotoSansJP-Regular.ttf', 30, self.answer3, WHITE, None, WINDOW_WIDTH // 2, 440)
+        #self.text_board('NotoSansJP-Regular.ttf', 30, self.answer4, WHITE, None, WINDOW_WIDTH // 2, 540)
+
+        self.describeAnswers(WHITE)
     
     def text_board(self, font, size, text, color, bgColor, x, y):
         font = pygame.font.Font(font, size)
@@ -59,8 +61,8 @@ class Game():
     def questionAnswerCheck(self):
         return self.questionAnswer - 1
     
-    def describeAnswers(self, result):
-        colors = [GRAY] * 4
+    def describeAnswers(self, color, result=False):
+        colors = [color] * 4
 
         if result:
             colors[self.questionAnswer - 1] = YELLOW
@@ -121,11 +123,7 @@ while running:
             if event.key == pygame.K_DOWN:
                 player.move(1)
             if event.key == pygame.K_SPACE:
-                print(player.answerCheck(), game.questionAnswerCheck())
-                if player.answerCheck() == game.questionAnswerCheck():
-                    game.describeAnswers(True)
-                else:
-                    game.describeAnswers(False)
+                game.describeAnswers(GRAY, player.answerCheck() == game.questionAnswerCheck())
 
     player.draw()   
     
