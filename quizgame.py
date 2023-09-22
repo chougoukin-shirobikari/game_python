@@ -1,4 +1,4 @@
-import pygame, random
+import pygame, random, sys
 from quizResource import quiz
 
 
@@ -37,11 +37,23 @@ class Game():
     def draw(self):
         pygame.draw.rect(display_surface, self.color, (self.x, self.y, self.width, self.height), self.line)
     
-    def theQuestion(self):
-        number = 0
-        number = random.randrange(len(quiz))
+    def theQuestion(self, number):
+        #number = 0
+        #number = random.randrange(len(quiz))
 
-        question, self.answer1, self.answer2, self.answer3, self.answer4, self.questionAnswer, self.answerDescription = quiz[number]
+        while True:
+            temp_number = random.randrange(len(quiz))
+            if temp_number != number:
+                number = temp_number
+                break
+        
+        try:
+            question, self.answer1, self.answer2, self.answer3, self.answer4, self.questionAnswer, self.answerDescription = quiz[number]
+        except:
+            print(f'Question Error, quizのリストの{number + 1}番目の問題を読み込むとき、エラーが発生しました。')
+            sys.exit()
+
+        
         
         self.text_board('NotoSansJP-Regular.ttf', 30, question, WHITE, None, WINDOW_WIDTH // 2, 100)
         #self.text_board('NotoSansJP-Regular.ttf', 30, self.answer1, WHITE, None, WINDOW_WIDTH // 2, 240)
@@ -50,6 +62,8 @@ class Game():
         #self.text_board('NotoSansJP-Regular.ttf', 30, self.answer4, WHITE, None, WINDOW_WIDTH // 2, 540)
 
         self.describeAnswers(WHITE)
+
+        return number
     
     def text_board(self, font, size, text, color, bgColor, x, y):
         font = pygame.font.Font(font, size)
@@ -71,6 +85,26 @@ class Game():
         self.text_board('NotoSansJP-Regular.ttf', 30, self.answer2, colors[1], None, WINDOW_WIDTH // 2, 340)
         self.text_board('NotoSansJP-Regular.ttf', 30, self.answer3, colors[2], None, WINDOW_WIDTH // 2, 440)
         self.text_board('NotoSansJP-Regular.ttf', 30, self.answer4, colors[3], None, WINDOW_WIDTH // 2, 540)
+
+        if color != WHITE:
+            self.text_board('NotoSansJP-Regular.ttf', 30, self.answerDescription, WHITE, None, WINDOW_WIDTH // 2, 100)
+
+    def fillBlackRect(self):
+        pygame.draw.rect(display_surface, BLACK, (self.x + 10, self.y + 10, self.width - 20, self.height - 20))
+    
+    def waitNextQuestion(self):
+        waiting = True
+        global running
+
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                    waiting = False
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    waiting = False
+        
+        return running
 
 class Player(Game):
     def __init__(self, x, y):
@@ -95,11 +129,17 @@ class Player(Game):
     
     def answerCheck(self):
         return self.answer
+    
+    def nextQuestion(self):
+        while self.answer > 0:
+            self.move(-1)
         
 
 game = Game(10, 20, WINDOW_WIDTH - 20, 160)
 game.draw()
-game.theQuestion()
+
+random_number = -1
+random_number = game.theQuestion(random_number)
 
 answer1, answer2, answer3, answer4 = Game(50, 200), Game(50, 300), Game(50, 400), Game(50, 500)
 
@@ -123,7 +163,16 @@ while running:
             if event.key == pygame.K_DOWN:
                 player.move(1)
             if event.key == pygame.K_SPACE:
+                game.fillBlackRect()
                 game.describeAnswers(GRAY, player.answerCheck() == game.questionAnswerCheck())
+
+                pygame.display.update()
+
+                if game.waitNextQuestion():
+                    game.fillBlackRect()
+                    [answer.fillBlackRect() for answer in answers]
+                    random_number = game.theQuestion(random_number)
+                    player.nextQuestion()
 
     player.draw()   
     
