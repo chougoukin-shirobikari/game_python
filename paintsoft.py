@@ -49,15 +49,44 @@ player_current_color = WHITE
 
 def current_display_color():
     pygame.draw.rect(display_surface, player_current_color, (11, WINDOW_HEIGHT - 89, 78, 78))
-    #pygame.draw.rect(display_surface, WHITE, (10, WINDOW_HEIGHT - 90, 80, 80), 1)
 
 current_display_color()
+
+player_drawing = False
+
+lineWidth_number = 15
 
 colors = [BLACK, RED, GREEN, BLUE, YELLOW, FUCHSIA, AQUA, GRAY, SILVER, NAVY, TEAL, OLIVE, PURPLE, MAROON]
 choice_color = []
 
 for i in range(len(colors)):
     choice_color.append([colors[i], pygame.draw.rect(display_surface, colors[i], (110 + (20 * i), WINDOW_HEIGHT - 85, 20, 70))])
+
+def player_paint_now():
+    global player_drawing
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+
+    if not paint_display.collidepoint((mouse_x, mouse_y)):
+        player_drawing = False
+        return
+    
+    paint_display_line_draw(mouse_x, mouse_y)
+
+def paint_display_line_draw(x, y):
+    draw_x_size = lineWidth_number
+    draw_y_size = lineWidth_number
+
+    if x == 10 or y == 10:
+        return
+
+    if x + lineWidth_number > 399:
+        draw_x_size = 399 - x
+    if y + lineWidth_number > 399:
+        draw_y_size = 399 - y
+    pygame.draw.rect(display_surface, player_current_color, (x, y, draw_x_size, draw_y_size))
+
+def paint_display_clear():
+    pygame.draw.rect(display_surface, BLACK, (11, 11, 388, 388))
 
 
 running = True
@@ -68,24 +97,40 @@ while running:
             running = False
 
         if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button != 1:
+                continue
+
             mouse_x, mouse_y = pygame.mouse.get_pos()
             
             if clear_display.collidepoint((mouse_x, mouse_y)):
-                print('画面のクリアのボタンがクリックされた！')
+                paint_display_clear()
             
             if line1_display.collidepoint((mouse_x, mouse_y)):
-                print('線の幅のボタン1がクリックされた！')
+                lineWidth_number = 15
+                print('現在選択している線の幅は', lineWidth_number)
             
             if line2_display.collidepoint((mouse_x, mouse_y)):
-                print('線の幅のボタン2がクリックされた！')
+                lineWidth_number = 20
+                print('現在選択している線の幅は', lineWidth_number)
             
             if line3_display.collidepoint((mouse_x, mouse_y)):
-                print('線の幅のボタン3がクリックされた！')
+                lineWidth_number = 30
+                print('現在選択している線の幅は', lineWidth_number)
             
             for c, r in choice_color:
                 if r.collidepoint((mouse_x, mouse_y)):
                     player_current_color = c
                     current_display_color()
+            
+            if paint_display.collidepoint((mouse_x, mouse_y)):
+                player_drawing = True
+
+        if event.type == pygame.MOUSEBUTTONUP:
+            if player_drawing:
+                player_drawing = False
+                    
+        if player_drawing:
+            player_paint_now()
 
     
     pygame.display.update()
