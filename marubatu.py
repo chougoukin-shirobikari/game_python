@@ -20,6 +20,11 @@ display_surface.fill(BLACK)
 FPS = 60
 clock = pygame.time.Clock()
 
+font = pygame.font.SysFont('hg丸ｺﾞｼｯｸmpro', 80)
+maru_font = font.render("〇", True, WHITE)
+batu_font = font.render("×", True, WHITE)
+blank_font = font.render("　", True, WHITE)
+
 def init():
     pygame.draw.rect(display_surface, WHITE, (100, 100, 300, 300), LINE_WIDTH)
 
@@ -36,6 +41,14 @@ def init():
 
 init()
 
+game = [[''] * 3 for _ in range(3)]
+
+def mouseCheck(x, y):
+    mouse_click_y, mouse_click_x = y // 100, x // 100
+    mouse_click_y -= 1
+    mouse_click_x -= 1
+    print(mouse_click_y, mouse_click_x)
+
 
 running = True
 
@@ -47,7 +60,42 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouseX = event.pos[0]
             mouseY = event.pos[1]
-            print(mouseY, mouseX)
+
+            waku_check = False
+
+            if mouseX < 100:
+                print('大枠より左を打った')
+                waku_check = True
+            if mouseX > 400:
+                print('大枠より右を打った')
+                waku_check = True
+            if mouseY < 100:
+                print('大枠より上を打った')
+                waku_check = True
+            if mouseY > 400:
+                print('大枠より下を打った')
+                waku_check = True
+            
+            if waku_check:
+                continue
+
+            if 100 <= mouseX <= 100 + LINE_WIDTH:
+                print('大枠の左を打った')
+                waku_check = True
+            if 100 + 300 - LINE_WIDTH <= mouseX <= 100 + 300:
+                print('大枠の右を打った')
+                waku_check = True
+            if 100 <= mouseY <= 100 + LINE_WIDTH:
+                print('大枠の上を打った')
+                waku_check = True
+            if 100 + 300 - LINE_WIDTH <= mouseY <= 100 + 300:
+                print('大枠の下を打った')
+                waku_check = True
+            
+            if waku_check:
+                continue
+
+            mouseCheck(mouseX, mouseY)
     
     pygame.display.update()
 
