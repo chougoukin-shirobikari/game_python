@@ -41,18 +41,19 @@ BLOCK_WIDTH = 60
 BLOCK_HEIGHT = 25
 BLOCK_PADDING = 10
 BLOCK_DRAW_X = 30
-BLOCK_DRAW_Y = 10
+BLOCK_DRAW_Y = 20
 
 block = []
 
-for y in range(5):
-    block_x = []
-    for x in range(5):
-        block_x.append([BLOCK_DRAW_X + (BLOCK_PADDING + BLOCK_WIDTH) * x, BLOCK_DRAW_Y + (BLOCK_PADDING + BLOCK_HEIGHT) * y, BLOCK_WIDTH, BLOCK_HEIGHT, True])
-    
-    block.append(block_x)
+def block_create():
+    for y in range(5):
+        block_x = []
+        for x in range(5):
+            block_x.append([BLOCK_DRAW_X + (BLOCK_PADDING + BLOCK_WIDTH) * x, BLOCK_DRAW_Y + (BLOCK_PADDING + BLOCK_HEIGHT) * y, BLOCK_WIDTH, BLOCK_HEIGHT, True])
+        
+        block.append(block_x)
 
-print(block)
+block_create()
 
 def block_display():
     for y in range(5):
@@ -87,6 +88,14 @@ def board_collision_check():
     if board_x <= ball_x + dx <= board_x + BOARD_WIDTH and ball_y + dy > WINDOW_HEIGHT - BOARD_HEIGHT:
         dy = -dy
 
+def gameOver():
+    newgame_font = pygame.font.Font('NotoSansJP-Regular.ttf', 25)
+    newgame = newgame_font.render('再プレイ：スペースキーを押す', True, BLACK, WHITE)
+    newgame_font_rect = newgame.get_rect()
+    newgame_font_rect.center = (WINDOW_HEIGHT // 2, WINDOW_HEIGHT // 2)
+    display_surface.blit(newgame, newgame_font_rect)
+    pygame.display.update()
+
 
 running = True
 
@@ -99,13 +108,11 @@ while running:
         
     pygame.draw.circle(display_surface, WHITE, (ball_x, ball_y), BALL_RADIUS)
 
-    block_display()
-
     board_display()
 
-    board_collision_check()
-
     block_collision_check()
+
+    block_display()
 
     if not(BALL_RADIUS <= ball_x + dx <= WINDOW_WIDTH - BALL_RADIUS):
         dx = -dx
@@ -124,6 +131,36 @@ while running:
     if keys[pygame.K_RIGHT]:
         if board_x + BOARD_MOVE <= WINDOW_WIDTH - BOARD_WIDTH:
             board_x += BOARD_MOVE
+    
+    board_collision_check()
+    
+    if ball_y + dy > WINDOW_HEIGHT - BOARD_HEIGHT:
+        gameStop = True
+        while gameStop:
+            gameOver()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    gameStop = False
+                    running = False
+                
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    display_surface.fill(BLACK)
+                    ball_x = WINDOW_WIDTH // 2 + BALL_RADIUS
+                    ball_y = WINDOW_HEIGHT - 50
+                    pygame.draw.circle(display_surface, WHITE, (ball_x, ball_y), BALL_RADIUS)
+
+                    dx = 5
+                    dy = -5
+
+                    block = []
+                    block_create()
+                    block_display()
+
+                    board_x = WINDOW_WIDTH // 2
+                    board_y = WINDOW_HEIGHT - BOARD_HEIGHT
+                    board_display()
+
+                    gameStop = False
 
     pygame.display.update()
 
