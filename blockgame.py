@@ -27,11 +27,13 @@ display_surface.fill(BLACK)
 FPS = 60
 clock = pygame.time.Clock()
 
+score = 0
+
 BOARD_WIDTH = 80
 BOARD_HEIGHT = 15
 BOARD_MOVE = 5
 
-board_x = WINDOW_WIDTH // 2
+board_x = WINDOW_WIDTH // 2 - (BOARD_WIDTH // 2)
 board_y = WINDOW_HEIGHT - BOARD_HEIGHT
 
 def board_display():
@@ -68,6 +70,7 @@ def block_display():
 
 def block_collision_check():
     global dy
+    global score
 
     for y in range(5):
         for x in range(5):
@@ -81,6 +84,7 @@ def block_collision_check():
                 if block_x <= ball_x + dx <= block_x + block_width and block_y <= ball_y + dy <= block_y + block_height:
                     dy = -dy
                     block[y][x][4] = False
+                    score += 1
 
 def board_collision_check():
     global dy
@@ -89,10 +93,21 @@ def board_collision_check():
         dy = -dy
 
 def gameOver():
+    gameover_font = pygame.font.Font('NotoSansJP-Regular.ttf', 40)
+
+    if score == 25:
+        gameover = gameover_font.render(f'点数：{score * 4}', True, YELLOW)
+    else:
+        gameover = gameover_font.render(f'点数：{score * 4}', True, WHITE)
+    
+    gameover_font_rect = gameover.get_rect()
+    gameover_font_rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 - 60)
+    display_surface.blit(gameover, gameover_font_rect)
+
     newgame_font = pygame.font.Font('NotoSansJP-Regular.ttf', 25)
     newgame = newgame_font.render('再プレイ：スペースキーを押す', True, BLACK, WHITE)
     newgame_font_rect = newgame.get_rect()
-    newgame_font_rect.center = (WINDOW_HEIGHT // 2, WINDOW_HEIGHT // 2)
+    newgame_font_rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
     display_surface.blit(newgame, newgame_font_rect)
     pygame.display.update()
 
@@ -134,7 +149,7 @@ while running:
     
     board_collision_check()
     
-    if ball_y + dy > WINDOW_HEIGHT - BOARD_HEIGHT:
+    if ball_y + dy > WINDOW_HEIGHT - BOARD_HEIGHT or score == 25:
         gameStop = True
         while gameStop:
             gameOver()
@@ -156,9 +171,11 @@ while running:
                     block_create()
                     block_display()
 
-                    board_x = WINDOW_WIDTH // 2
+                    board_x = WINDOW_WIDTH // 2 - (BOARD_WIDTH // 2)
                     board_y = WINDOW_HEIGHT - BOARD_HEIGHT
                     board_display()
+
+                    score = 0
 
                     gameStop = False
 
