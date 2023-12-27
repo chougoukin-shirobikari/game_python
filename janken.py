@@ -42,6 +42,8 @@ draw, draw_rect = text_board('hgｺﾞｼｯｸe', 64, "引き分け", WHITE, WI
 continue_text, continue_rect = text_board('meiryo', 50, "続ける", WHITE, WINDOW_WIDTH // 2 - 100, WINDOW_HEIGHT - 100)
 quit_text, quit_rect = text_board('meiryo', 50, "やめる", WHITE, WINDOW_WIDTH // 2 + 100, WINDOW_HEIGHT - 100)
 
+continue_choice = [(continue_text, continue_rect), (quit_text, quit_rect)]
+
 player_dict = {'gu': text_board('hgｺﾞｼｯｸe', 64, "グー", WHITE, 200, 250), 'choki': text_board('hgｺﾞｼｯｸe', 64, "チョキ", WHITE, 200, 250), 'pa': text_board('hgｺﾞｼｯｸe', 64, "パー", WHITE, 200, 250)}
 
 opponent_gu, opponent_gu_rect = text_board('hgｺﾞｼｯｸe', 64, "グー", WHITE, 470, 250)
@@ -57,6 +59,8 @@ game_text(game_choice)
 
 def janken_match(player_choice):
     global gamePlaying
+
+    display_surface.fill(BLACK)
 
     display_surface.blit(*player_dict[player_choice])
     opponent_choice = random.choice(['gu', 'choki', 'pa'])
@@ -76,6 +80,8 @@ def janken_match(player_choice):
         display_surface.blit(lose, lose_rect)
     elif player_choice == opponent_choice:
         display_surface.blit(draw, draw_rect)
+    
+    game_text(continue_choice)
 
     gamePlaying = False
 
@@ -97,6 +103,13 @@ while running:
                     janken_match('choki')
                 if choice_pa_rect.collidepoint(mouse_x, mouse_y):
                     janken_match('pa')
+            else:
+                if continue_rect.collidepoint(mouse_x, mouse_y):
+                    gamePlaying = True
+                    display_surface.fill(BLACK)
+                    game_text(game_choice)
+                if quit_rect.collidepoint(mouse_x, mouse_y):
+                    running = False
     
     clock.tick(FPS)
 
