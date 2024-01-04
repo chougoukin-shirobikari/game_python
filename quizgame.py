@@ -30,6 +30,9 @@ class Game():
         self.width = width
         self.height = height
         self.line = 1
+
+        self.questionAnswer = -1
+        self.answer1 = self.answer2 = self.answer3 = self.answer4 = self.answerDescription = None
     
     def draw(self):
         pygame.draw.rect(display_surface, self.color, (self.x, self.y, self.width, self.height), self.line)
@@ -38,12 +41,9 @@ class Game():
         number = 0
         number = random.randrange(len(quiz))
 
-        question, answer1, answer2, answer3, answer4, questionAnswer, answerDescription = quiz[number]
+        question, self.answer1, self.answer2, self.answer3, self.answer4, self.questionAnswer, self.answerDescription = quiz[number]
         self.text_board('NotoSansJP-Regular.ttf', 30, question, WHITE, None, WINDOW_WIDTH // 2, 100)
-        self.text_board('NotoSansJP-Regular.ttf', 30, answer1, WHITE, None, WINDOW_WIDTH // 2, 240)
-        self.text_board('NotoSansJP-Regular.ttf', 30, answer2, WHITE, None, WINDOW_WIDTH // 2, 340)
-        self.text_board('NotoSansJP-Regular.ttf', 30, answer3, WHITE, None, WINDOW_WIDTH // 2, 440)
-        self.text_board('NotoSansJP-Regular.ttf', 30, answer4, WHITE, None, WINDOW_WIDTH // 2, 540)
+        self.describeAnswers(WHITE)
         
     def text_board(self, font, size, text, color, bgColor, x, y):
         font = pygame.font.Font(font, size)
@@ -51,6 +51,38 @@ class Game():
         textsurf_rect = textsurf.get_rect()
         textsurf_rect.center = (x, y)
         display_surface.blit(textsurf, textsurf_rect)
+    
+    def questionAnswerCheck(self):
+        return self.questionAnswer - 1
+    
+    def describeAnswers(self, color, result=False):
+        colors = [color] * 4
+        if result:
+            colors[self.questionAnswer - 1] = YELLOW
+        self.text_board('NotoSansJP-Regular.ttf', 30, self.answer1, colors[0], None, WINDOW_WIDTH // 2, 240)
+        self.text_board('NotoSansJP-Regular.ttf', 30, self.answer2, colors[1], None, WINDOW_WIDTH // 2, 340)
+        self.text_board('NotoSansJP-Regular.ttf', 30, self.answer3, colors[2], None, WINDOW_WIDTH // 2, 440)
+        self.text_board('NotoSansJP-Regular.ttf', 30, self.answer4, colors[3], None, WINDOW_WIDTH // 2, 540)
+
+        if color != WHITE:
+            self.text_board('NotoSansJP-Regular.ttf', 30, self.answerDescription, WHITE, None, WINDOW_WIDTH // 2, 100)
+    
+    def fillBlackRect(self):
+        pygame.draw.rect(display_surface, BLACK, (self.x + 10, self.y + 10, self.width - 20, self.height - 20))
+    
+    def waitNextQuestion(self):
+        waiting = True
+        global running
+
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                    waiting = False
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    waiting = False
+        
+        return running
 
 class Player(Game):
     def __init__(self, x, y):
@@ -70,6 +102,13 @@ class Player(Game):
         elif answer_choice == 1 and self.answer < 3:
             pygame.draw.rect(display_surface, WHITE, (self.x, self.y, self.width, self.height), self.line)
             self.answer += 1
+    
+    def answerCheck(self):
+        return self.answer
+    
+    def nextQuestion(self):
+        while self.answer > 0:
+            self.move(-1)
 
 game = Game(10, 20, WINDOW_WIDTH - 20, 160)
 game.draw()
@@ -93,6 +132,17 @@ while running:
                 player.move(-1)
             if event.key == pygame.K_DOWN:
                 player.move(1)
+            if event.key == pygame.K_SPACE:
+                game.fillBlackRect()
+                game.describeAnswers(GRAY, player.answerCheck() == game.questionAnswerCheck())
+                
+                pygame.display.update()
+
+                if game.waitNextQuestion():
+                    game.fillBlackRect()
+                    [answer.fillBlackRect() for answer in answers]
+                    game.theQuestion()
+                    player.nextQuestion()
     
     player.draw()
     
