@@ -1,4 +1,4 @@
-import pygame, random
+import pygame, random, sys
 from quizResource import quiz
 
 
@@ -37,13 +37,23 @@ class Game():
     def draw(self):
         pygame.draw.rect(display_surface, self.color, (self.x, self.y, self.width, self.height), self.line)
     
-    def theQuestion(self):
-        number = 0
-        number = random.randrange(len(quiz))
-
-        question, self.answer1, self.answer2, self.answer3, self.answer4, self.questionAnswer, self.answerDescription = quiz[number]
+    def theQuestion(self, number):
+        while True:
+            temp_number = random.randrange(len(quiz))
+            if temp_number != number:
+                number = temp_number
+                break
+        
+        try:
+            question, self.answer1, self.answer2, self.answer3, self.answer4, self.questionAnswer, self.answerDescription = quiz[number]
+        except:
+            print(f'Question Error, quizのリストの{number + 1}番目の問題を読み込むとき、エラーが発生しました。')
+            sys.exit()
+        
         self.text_board('NotoSansJP-Regular.ttf', 30, question, WHITE, None, WINDOW_WIDTH // 2, 100)
         self.describeAnswers(WHITE)
+
+        return number
         
     def text_board(self, font, size, text, color, bgColor, x, y):
         font = pygame.font.Font(font, size)
@@ -112,7 +122,8 @@ class Player(Game):
 
 game = Game(10, 20, WINDOW_WIDTH - 20, 160)
 game.draw()
-game.theQuestion()
+random_number = -1
+random_number = game.theQuestion(random_number)
 
 answer1, answer2, answer3, answer4 = Game(50, 200), Game(50, 300), Game(50, 400), Game(50, 500)
 answers = [answer1, answer2, answer3, answer4]
@@ -141,7 +152,7 @@ while running:
                 if game.waitNextQuestion():
                     game.fillBlackRect()
                     [answer.fillBlackRect() for answer in answers]
-                    game.theQuestion()
+                    random_number = game.theQuestion(random_number)
                     player.nextQuestion()
     
     player.draw()
