@@ -46,6 +46,9 @@ class Bingo():
 
         self.not_choosed_numbers = product_bingo_numbers()
 
+        self.bingo_game = [[False] * 5 for _ in range(5)]
+        self.bingo_game[2][2] = True
+
     def bingo_display(self):
         bingo_numbers = product_bingo_numbers()
 
@@ -62,7 +65,7 @@ class Bingo():
                     text_board('NotoSansJP-Regular.ttf', 30, number, WHITE, None, rect.centerx, rect.centery)
                 
                 temp_bingo_list.append([rect, number])
-                self.bingo_list.append(temp_bingo_list)
+            self.bingo_list.append(temp_bingo_list)
 
     def change_bingo_number(self, rect, num, rect_color=LemonChiffon, num_color=GRAY):
         pygame.draw.rect(display_surface, rect_color, (rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2))
@@ -85,6 +88,38 @@ class Bingo():
                 r, n = self.bingo_list[y][x]
                 if n == number:
                     self.change_bingo_number(r, n)
+                    self.bingo_game[y][x] = True
+        
+        [print(i) for i in self.bingo_game]
+        print()
+    
+    def check_bingo(self):
+        check = False
+
+        for y in range(5):
+            if all(self.bingo_game[y]):
+                check = True
+                for x in range(5):
+                    self.change_bingo_number(*self.bingo_list[y][x], YELLOW)
+        
+        for x in range(5):
+            if all(self.bingo_game[y][x] for y in range(5)):
+                check = True
+                for y in range(5):
+                    self.change_bingo_number(*self.bingo_list[y][x], YELLOW)
+        
+        if all(self.bingo_game[i][i] for i in range(5)):
+            check = True
+            for i in range(5):
+                self.change_bingo_number(*self.bingo_list[i][i], YELLOW)
+        
+        if all(self.bingo_game[i][4 - i] for i in range(5)):
+            check = True
+            for i in range(5):
+                self.change_bingo_number(*self.bingo_list[i][4 - i], YELLOW)
+        
+        return check
+
 
 def product_bingo_numbers():
     bingo_numbers = []
@@ -112,6 +147,8 @@ while running:
             running = False
         
         if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button != 1:
+                continue
             mouse_x, mouse_y = pygame.mouse.get_pos()
             if bingo.number_button.collidepoint(mouse_x, mouse_y):
                 number = str(bingo.not_choosed_numbers.pop(random.randrange(len(bingo.not_choosed_numbers))))
@@ -119,6 +156,25 @@ while running:
                 text_board('NotoSansJP-Regular.ttf', 100, str(number), WHITE, None, 500, 270)
                 text_board(*bingo.bingo_number_gray_display[int(number)])
                 bingo.check_the_game(number)
+            
+            check_bingo_result = bingo.check_bingo()
+
+            if check_bingo_result:
+                text_board('NotoSansJP-Regular.ttf', 120, 'ビンゴ！', RED, None, WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 - 10)
+                text_board('NotoSansJP-Regular.ttf', 30, 'スペースキーを押してもう一度ゲームをする', GRAY, WHITE, WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 180)
+                pygame.display.update()
+
+                game_over = True
+
+                while game_over:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            game_over = False
+                            running = False
+                        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                            game_over = False
+                            display_surface.fill(BLACK)
+                            bingo = Bingo()
     
     pygame.display.update()
     
