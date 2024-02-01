@@ -52,13 +52,31 @@ class Maze():
                     pygame.draw.rect(display_surface, GRAY, (self.x + 30 * x, self.y + 30 * y, 30, 30))
                 elif choosed_maze[y][x] == 'G':
                     pygame.draw.rect(display_surface, RED, (self.x + 30 * x, self.y + 30 * y, 30, 30))
+                    text_board('NotoSansJP-Regular.ttf', 10, 'ゴール', BLACK, None, self.x + 30 * x + 15, self.y + 30 * y + 15)
                 elif choosed_maze[y][x] == 'Y':
                     pygame.draw.rect(display_surface, YELLOW, (self.x + 30 * x, self.y + 30 * y, 30, 30))
+                    text_board('NotoSansJP-Regular.ttf', 10, '鍵', BLACK, None, self.x + 30 * x + 15, self.y + 30 * y + 15)
                 elif choosed_maze[y][x] == 'B':
                     pygame.draw.rect(display_surface, BROWN, (self.x + 30 * x, self.y + 30 * y, 30, 30))
+                    text_board('NotoSansJP-Regular.ttf', 10, '門', BLACK, None, self.x + 30 * x + 15, self.y + 30 * y + 15)
 
+class Player():
+    def __init__(self, maze):
+        self.maze = maze
+        self.x = self.maze.x + 30
+        self.y = self.maze.y + 30
+        self.player = pygame.draw.rect(display_surface, STEELBLUE, (self.x, self.y, 30, 30))
+    
+    def draw(self, x, y):
+        self.player = pygame.draw.rect(display_surface, WHITE, (self.x, self.y, 30, 30))
+        
+        self.x += x
+        self.y += y
+        self.player = pygame.draw.rect(display_surface, STEELBLUE, (self.x, self.y, 30, 30))
 
 maze = Maze()
+
+player = Player(maze)
 
 
 running = True
@@ -67,6 +85,15 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                player.draw(0, -30)
+            if event.key == pygame.K_DOWN:
+                player.draw(0, 30)
+            if event.key == pygame.K_RIGHT:
+                player.draw(30, 0)
+            if event.key == pygame.K_LEFT:
+                player.draw(-30, 0)
     
     pygame.display.update()
     
