@@ -18,6 +18,10 @@ display_surface.fill(BLACK)
 FPS = 60
 clock = pygame.time.Clock()
 
+sound = ['ド', 'レ', 'ミ', 'ファ', 'ソ', 'ラ', 'シ', 'ド']
+
+keyboard_info = []
+
 def text_board(font, size, text, color, x, y):
     font = pygame.font.Font(font, size)
     textsurf = font.render(text, True, color)
@@ -29,14 +33,11 @@ text_board('NotoSansJP-Regular.ttf', 50, 'シンプルなピアノ', WHITE, WIND
 
 pygame.draw.rect(display_surface, WHITE, (0, WINDOW_HEIGHT // 2, WINDOW_WIDTH, WINDOW_HEIGHT // 2))
 
-pygame.draw.rect(display_surface, BLACK, (6, WINDOW_HEIGHT // 2, WINDOW_WIDTH // 8 - 10, WINDOW_HEIGHT // 2 - 10), 2)
-pygame.draw.rect(display_surface, BLACK, (6 + WINDOW_WIDTH // 8, WINDOW_HEIGHT // 2, WINDOW_WIDTH // 8 - 10, WINDOW_HEIGHT // 2 - 10), 2)
-pygame.draw.rect(display_surface, BLACK, (6 + WINDOW_WIDTH // 8 * 2, WINDOW_HEIGHT // 2, WINDOW_WIDTH // 8 - 10, WINDOW_HEIGHT // 2 - 10), 2)
-pygame.draw.rect(display_surface, BLACK, (6 + WINDOW_WIDTH // 8 * 3, WINDOW_HEIGHT // 2, WINDOW_WIDTH // 8 - 10, WINDOW_HEIGHT // 2 - 10), 2)
-pygame.draw.rect(display_surface, BLACK, (6 + WINDOW_WIDTH // 8 * 4, WINDOW_HEIGHT // 2, WINDOW_WIDTH // 8 - 10, WINDOW_HEIGHT // 2 - 10), 2)
-pygame.draw.rect(display_surface, BLACK, (6 + WINDOW_WIDTH // 8 * 5, WINDOW_HEIGHT // 2, WINDOW_WIDTH // 8 - 10, WINDOW_HEIGHT // 2 - 10), 2)
-pygame.draw.rect(display_surface, BLACK, (6 + WINDOW_WIDTH // 8 * 6, WINDOW_HEIGHT // 2, WINDOW_WIDTH // 8 - 10, WINDOW_HEIGHT // 2 - 10), 2)
-pygame.draw.rect(display_surface, BLACK, (6 + WINDOW_WIDTH // 8 * 7, WINDOW_HEIGHT // 2, WINDOW_WIDTH // 8 - 10, WINDOW_HEIGHT // 2 - 10), 2)
+for c in range(8):
+    keyboard_info.append(pygame.draw.rect(display_surface, BLACK, (6 + (WINDOW_WIDTH // 8 * c), WINDOW_HEIGHT // 2, WINDOW_WIDTH // 8 - 10, WINDOW_HEIGHT // 2 - 10), 2))
+
+for c in range(8):
+    text_board('NotoSansJP-Regular.ttf', 30, sound[c], BLACK, 6 + (WINDOW_WIDTH // 8 * c) + 35, WINDOW_HEIGHT // 2 + 100)
 
 
 running = True
@@ -45,6 +46,25 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                x, y = event.pos
+                if keyboard_info[0].collidepoint(x, y):
+                    print('ド')
+                if keyboard_info[1].collidepoint(x, y):
+                    print('レ')
+                if keyboard_info[2].collidepoint(x, y):
+                    print('ミ')
+                if keyboard_info[3].collidepoint(x, y):
+                    print('ファ')
+                if keyboard_info[4].collidepoint(x, y):
+                    print('ソ')
+                if keyboard_info[5].collidepoint(x, y):
+                    print('ラ')
+                if keyboard_info[6].collidepoint(x, y):
+                    print('シ')
+                if keyboard_info[7].collidepoint(x, y):
+                    print('ド')  
     
     pygame.display.update()
     
