@@ -22,6 +22,17 @@ sound = ['ド', 'レ', 'ミ', 'ファ', 'ソ', 'ラ', 'シ', 'ド']
 
 keyboard_info = []
 
+sound_do = pygame.mixer.Sound("maou_se_inst/maou_se_inst_piano1_1do.mp3")
+sound_re = pygame.mixer.Sound("maou_se_inst/maou_se_inst_piano1_2re.mp3")
+sound_mi = pygame.mixer.Sound("maou_se_inst/maou_se_inst_piano1_3mi.mp3")
+sound_fa = pygame.mixer.Sound("maou_se_inst/maou_se_inst_piano1_4fa.mp3")
+sound_so = pygame.mixer.Sound("maou_se_inst/maou_se_inst_piano1_5so.mp3")
+sound_ra = pygame.mixer.Sound("maou_se_inst/maou_se_inst_piano1_6ra.mp3")
+sound_si = pygame.mixer.Sound("maou_se_inst/maou_se_inst_piano1_7si.mp3")
+sound_do2 = pygame.mixer.Sound("maou_se_inst/maou_se_inst_piano1_8do.mp3")
+
+keyboard_sound = [sound_do, sound_re, sound_mi, sound_fa, sound_so, sound_ra, sound_si, sound_do2]
+
 def text_board(font, size, text, color, x, y):
     font = pygame.font.Font(font, size)
     textsurf = font.render(text, True, color)
@@ -49,22 +60,9 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 x, y = event.pos
-                if keyboard_info[0].collidepoint(x, y):
-                    print('ド')
-                if keyboard_info[1].collidepoint(x, y):
-                    print('レ')
-                if keyboard_info[2].collidepoint(x, y):
-                    print('ミ')
-                if keyboard_info[3].collidepoint(x, y):
-                    print('ファ')
-                if keyboard_info[4].collidepoint(x, y):
-                    print('ソ')
-                if keyboard_info[5].collidepoint(x, y):
-                    print('ラ')
-                if keyboard_info[6].collidepoint(x, y):
-                    print('シ')
-                if keyboard_info[7].collidepoint(x, y):
-                    print('ド')  
+                for c in range(8):
+                    if keyboard_info[c].collidepoint(x, y):
+                        keyboard_sound[c].play()
     
     pygame.display.update()
     
