@@ -27,6 +27,8 @@ blank_font = font.render(" ", True, WHITE)
 
 player = 0
 
+gameStop = False
+
 def init():
     pygame.draw.rect(display_surface, WHITE, (100, 100, 300, 300), LINE_WIDTH)
 
@@ -62,6 +64,59 @@ def mouseCheck(x, y):
             display_surface.blit(batu_font, ((mouse_click_x + 1) * 100 + 10, (mouse_click_y + 1) * 100 + 10))
         
         player = (player + 1) % 2
+
+def gameCheck():
+    if game[0][0] == game[0][1] == game[0][2] == '〇':
+        return '〇'
+    elif game[0][0] == game[0][1] == game[0][2] == '×':
+        return '×'
+    elif game[1][0] == game[1][1] == game[1][2] == '〇':
+        return '〇'
+    elif game[1][0] == game[1][1] == game[1][2] == '×':
+        return '×'
+    elif game[2][0] == game[2][1] == game[2][2] == '〇':
+        return '〇'
+    elif game[2][0] == game[2][1] == game[2][2] == '×':
+        return '×'
+    elif game[0][0] == game[1][0] == game[2][0] == '〇':
+        return '〇'
+    elif game[0][0] == game[1][0] == game[2][0] == '×':
+        return '×'
+    elif game[0][1] == game[1][1] == game[2][1] == '〇':
+        return '〇'
+    elif game[0][1] == game[1][1] == game[2][1] == '×':
+        return '×'
+    elif game[0][2] == game[1][2] == game[2][2] == '〇':
+        return '〇'
+    elif game[0][2] == game[1][2] == game[2][2] == '×':
+        return '×'
+    elif game[0][0] == game[1][1] == game[2][2] == '〇':
+        return '〇'
+    elif game[0][0] == game[1][1] == game[2][2] == '×':
+        return '×'
+    elif game[0][2] == game[1][1] == game[2][0] == '〇':
+        return '〇'
+    elif game[0][2] == game[1][1] == game[2][0] == '×':
+        return '×'
+    elif '' not in sum(game, []):
+        return 0
+    else:
+        return -1
+
+def gameClear(victory, victory_message):
+    judgement_font = pygame.font.SysFont('hg丸ｺﾞｼｯｸmpro', 65)
+    judgement = judgement_font.render(victory_message, True, WHITE)
+    judgement_font_rect = judgement.get_rect()
+    judgement_font_rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT - 50)
+    display_surface.blit(judgement, judgement_font_rect)
+
+    gameclear_font = pygame.font.SysFont('hg丸ｺﾞｼｯｸmpro', 35)
+    gameclear = gameclear_font.render('再プレイ：スペースキーを押す', True, BLACK, WHITE)
+    gameclear_font_rect = gameclear.get_rect()
+    gameclear_font_rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
+    display_surface.blit(gameclear, gameclear_font_rect)
+
+    pygame.display.update()
 
 
 running = True
@@ -104,6 +159,29 @@ while running:
                 continue
 
             mouseCheck(mouseX, mouseY)
+
+            ans = gameCheck()
+            if ans != -1:
+                if ans == '〇' or ans == '×':
+                    gameClear(ans, f'{ans}の勝ち')
+                elif ans == 0:
+                    gameClear(ans, '引き分け')
+                
+                gameStop = True
+
+                while gameStop:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            gameStop = False
+                            running = False
+                        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                            display_surface.fill(BLACK)
+                            
+                            init()
+                            game = [[''] * 3 for _ in range(3)]
+                            player = 0
+                            
+                            gameStop = False
     
     pygame.display.update()
 
