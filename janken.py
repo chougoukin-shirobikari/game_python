@@ -1,4 +1,4 @@
-import pygame
+import pygame, random
 
 
 pygame.init()
@@ -17,6 +17,8 @@ GRAY = (128, 125, 128)
 
 FPS = 60
 clock = pygame.time.Clock()
+
+gamePlaying = True
 
 def text_board(font, size, text, color, x, y):
     font = pygame.font.SysFont(font, size)
@@ -55,6 +57,35 @@ def game_text(message):
 
 game_text(game_choice)
 
+def janken_match(player_choice):
+    global gamePlaying
+
+    display_surface.fill(BLACK)
+
+    display_surface.blit(*player_dict[player_choice])
+
+    opponent_choice = random.choice(['gu', 'choki', 'pa'])
+    display_surface.blit(*opponent_dict[opponent_choice])
+
+    if player_choice == 'pa' and opponent_choice == 'gu':
+        display_surface.blit(win, win_rect)
+    elif player_choice == 'gu' and opponent_choice == 'choki':
+        display_surface.blit(win, win_rect)
+    elif player_choice == 'choki' and opponent_choice == 'pa':
+        display_surface.blit(win, win_rect)
+    elif player_choice == 'pa' and opponent_choice == 'choki':
+        display_surface.blit(lose, lose_rect)
+    elif player_choice == 'gu' and opponent_choice == 'pa':
+        display_surface.blit(lose, lose_rect)
+    elif player_choice == 'choki' and opponent_choice == 'gu':
+        display_surface.blit(lose, lose_rect)
+    elif player_choice == opponent_choice:
+        display_surface.blit(draw, draw_rect)
+    
+    game_text(continue_choice)
+
+    gamePlaying = False
+
 
 running = True
 
@@ -62,6 +93,23 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x = event.pos[0]
+            mouse_y = event.pos[1]
+            if gamePlaying:
+                if choice_gu_rect.collidepoint(mouse_x, mouse_y):
+                    janken_match('gu')
+                if choice_choki_rect.collidepoint(mouse_x, mouse_y):
+                    janken_match('choki')
+                if choice_pa_rect.collidepoint(mouse_x, mouse_y):
+                    janken_match('pa')
+            else:
+                if continue_rect.collidepoint(mouse_x, mouse_y):
+                    gamePlaying = True
+                    display_surface.fill(BLACK)
+                    game_text(game_choice)
+                if quit_rect.collidepoint(mouse_x, mouse_y):
+                    running = False
     
     pygame.display.update()
 
