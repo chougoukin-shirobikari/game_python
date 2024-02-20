@@ -21,13 +21,7 @@ clock = pygame.time.Clock()
 
 class StopWatch():
     def __init__(self):
-        pygame.draw.line(display_surface, WHITE, (30, WINDOW_HEIGHT - 175), (130, WINDOW_HEIGHT - 175), 5)
-        pygame.draw.line(display_surface, WHITE, (140, WINDOW_HEIGHT - 175), (240, WINDOW_HEIGHT - 175), 5)
-        pygame.draw.line(display_surface, WHITE, (270, WINDOW_HEIGHT - 175), (370, WINDOW_HEIGHT - 175), 5)
-        pygame.draw.line(display_surface, WHITE, (380, WINDOW_HEIGHT - 175), (480, WINDOW_HEIGHT - 175), 5)
-        pygame.draw.line(display_surface, WHITE, (510, WINDOW_HEIGHT - 175), (610, WINDOW_HEIGHT - 175), 5)
-        pygame.draw.line(display_surface, WHITE, (620, WINDOW_HEIGHT - 175), (720, WINDOW_HEIGHT - 175), 5)
-        pygame.draw.line(display_surface, WHITE, (730, WINDOW_HEIGHT - 175), (830, WINDOW_HEIGHT - 175), 5)
+        self.drawLines(WHITE)
 
         self.playButton = pygame.draw.rect(display_surface, WHITE, (WINDOW_WIDTH // 2 - 100, WINDOW_HEIGHT - 120, 200, 80), 2)
         self.start, self.start_rect = self.text_board('NotoSansJP-Regular.ttf', 55, "START", WHITE)
@@ -35,9 +29,6 @@ class StopWatch():
 
         self.start_rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT - 82.5)
         self.stop_rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT - 82.5)
-
-        display_surface.blit(self.start, self.start_rect)
-        #display_surface.blit(self.stop, self.stop_rect)
 
         self.milliseconds0, self.milliseconds0_rect = self.text_board('NotoSansJP-Regular.ttf', 95, "0", WHITE)
         self.milliseconds1, self.milliseconds1_rect = self.text_board('NotoSansJP-Regular.ttf', 95, "0", WHITE)
@@ -50,6 +41,28 @@ class StopWatch():
         self.stopWatchTimeRect()
         self.stopWatchDisplay()
 
+        self.timeStart = False
+        self.update_time = 0
+
+        self.playButtonDisplay()
+    
+    def drawLines(self, color):
+        pygame.draw.rect(display_surface, BLACK, (0, WINDOW_HEIGHT - 178, WINDOW_WIDTH, 6))
+        pygame.draw.line(display_surface, color, (30, WINDOW_HEIGHT - 175), (130, WINDOW_HEIGHT - 175), 5)
+        pygame.draw.line(display_surface, color, (140, WINDOW_HEIGHT - 175), (240, WINDOW_HEIGHT - 175), 5)
+        pygame.draw.line(display_surface, color, (270, WINDOW_HEIGHT - 175), (370, WINDOW_HEIGHT - 175), 5)
+        pygame.draw.line(display_surface, color, (380, WINDOW_HEIGHT - 175), (480, WINDOW_HEIGHT - 175), 5)
+        pygame.draw.line(display_surface, color, (510, WINDOW_HEIGHT - 175), (610, WINDOW_HEIGHT - 175), 5)
+        pygame.draw.line(display_surface, color, (620, WINDOW_HEIGHT - 175), (720, WINDOW_HEIGHT - 175), 5)
+        pygame.draw.line(display_surface, color, (730, WINDOW_HEIGHT - 175), (830, WINDOW_HEIGHT - 175), 5)
+
+    def playButtonDisplay(self):
+        pygame.draw.rect(display_surface, BLACK, (WINDOW_WIDTH // 2 - 90, WINDOW_HEIGHT - 110, 180, 60))
+
+        if self.timeStart:
+            display_surface.blit(self.stop, self.stop_rect)
+        else:
+            display_surface.blit(self.start, self.start_rect)
 
     def text_board(self, font, size, text, color):
         font = pygame.font.Font(font, size)
@@ -75,7 +88,17 @@ class StopWatch():
         display_surface.blit(self.seconds1, self.seconds1_rect)
         display_surface.blit(self.minutes0, self.minutes0_rect)
         display_surface.blit(self.minutes1, self.minutes1_rect)
-        
+    
+    def clickCheck(self, x, y):
+        if self.playButton.collidepoint(x, y):
+            if not self.timeStart:
+                self.timeStart = True
+                self.playButtonDisplay()
+                self.drawLines(BLUE)
+            else:
+                self.timeStart = False
+                self.playButtonDisplay()
+                self.drawLines(WHITE)
 
 stop_watch = StopWatch()
 
@@ -86,6 +109,11 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x = event.pos[0]
+            mouse_y = event.pos[1]
+            
+            stop_watch.clickCheck(mouse_x, mouse_y)
     
     pygame.display.update()
 
