@@ -50,11 +50,31 @@ choice_color_black = pygame.draw.rect(display_surface, BLACK, (110, WINDOW_HEIGH
 choice_color_red = pygame.draw.rect(display_surface, RED, (130, WINDOW_HEIGHT - 85, 20, 70))
 choice_color_green = pygame.draw.rect(display_surface, GREEN, (150, WINDOW_HEIGHT - 85, 20, 70))
 
+player_current_color = WHITE
+
+def current_display_color():
+    pygame.draw.rect(display_surface, player_current_color, (11, WINDOW_WIDTH - 89, 78, 78))
+
+current_display_color()
+
+player_drawing = False
+
 colors = [BLACK, RED, GREEN, BLUE, YELLOW, FUCHSIA, AQUA, GRAY, SILVER, NAVY, TEAL, OLIVE, PURPLE, MAROON]
 choice_color = []
 
 for i in range(len(colors)):
     choice_color.append([colors[i], pygame.draw.rect(display_surface, colors[i], (110 + (i * 20), WINDOW_HEIGHT - 85, 20, 70))])
+
+def player_paint_now():
+    global player_drawing
+
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+
+    if not paint_display.collidepoint((mouse_x, mouse_y)):
+        player_drawing = False
+        return
+    
+    print('ペイントの内側！')
 
 
 running = True
@@ -63,6 +83,33 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button != 1:
+                continue
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            if clear_display.collidepoint(mouse_x, mouse_y):
+                print('画面のクリアボタンがクリックされた！')
+            if line1_display.collidepoint(mouse_x, mouse_y):
+                print('線の幅ボタン1がクリックされた！')
+            if line2_display.collidepoint(mouse_x, mouse_y):
+                print('線の幅ボタン2がクリックされた！')
+            if line3_display.collidepoint(mouse_x, mouse_y):
+                print('線の幅ボタン3がクリックされた！')
+            
+            for c, r in choice_color:
+                if r.collidepoint(mouse_x, mouse_y):
+                    player_current_color = c
+                    current_display_color()
+            
+            if paint_display.collidepoint((mouse_x, mouse_y)):
+                player_drawing = True
+            
+        if event.type == pygame.MOUSEBUTTONUP:
+            if player_drawing:
+                player_drawing = False
+        
+        if player_drawing:
+            player_paint_now()
     
     pygame.display.update()
     
