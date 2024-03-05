@@ -31,6 +31,24 @@ class Bingo():
         self.number_button = pygame.draw.rect(display_surface, WHITE, (30, WINDOW_HEIGHT - 125, 350, 80), 1)
 
         text_board('NotoSansJP-Regular.ttf', 50, 'ビンゴゲーム', YELLOW, None, WINDOW_WIDTH // 2, 50)
+        text_board('NotoSansJP-Regular.ttf', 30, '番号', SILVER, None, 500, 165)
+        text_board('NotoSansJP-Regular.ttf', 30, '出た数字', SILVER, None, 500, 390)
+        text_board('NotoSansJP-Regular.ttf', 40, '番号を選ぶ', SILVER, None, 208, WINDOW_HEIGHT - 85)
+
+        self.bingo_display()
+    
+    def bingo_display(self):
+        for y in range(5):
+            for x in range(5):
+                pygame.draw.rect(display_surface, WHITE, (20 + 75 * x, 160 + 75 * y, 70, 70), 1)
+
+def product_bingo_numbers():
+    bingo_numbers = []
+
+    for i in range(1, 76):
+        bingo_numbers.append(i)
+    
+    return bingo_numbers
 
 def text_board(font, size, text, color, bgColor, x, y):
     font = pygame.font.Font(font, size)
