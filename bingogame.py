@@ -12,6 +12,7 @@ pygame.display.set_caption("ビンゴゲーム")
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 GRAY = (128, 128, 128)
 SILVER = (192, 192, 192)
@@ -86,8 +87,6 @@ class Bingo():
                 if n == number:
                     self.change_bingo_number(r, n)
                     self.bingo_game[y][x] = True
-        [print(i) for i in self.bingo_game]
-        print('\n')
     
     def check_bingo(self):
         check = False
@@ -141,6 +140,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button != 1:
+                continue
             mouse_x, mouse_y = pygame.mouse.get_pos()
             if bingo.number_button.collidepoint(mouse_x, mouse_y):
                 number = str(bingo.not_choosed_numbers.pop(random.randrange(len(bingo.not_choosed_numbers))))
@@ -149,6 +150,25 @@ while running:
                 text_board(*bingo.bingo_number_gray_display[int(number)])
                 bingo.check_the_game(number)
                 check_bingo_result = bingo.check_bingo()
+
+                if check_bingo_result:
+                    text_board('NotoSansJP-Regular.ttf', 120, 'ビンゴ！', RED, None, WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 - 10)
+                    text_board('NotoSansJP-Regular.ttf', 30, 'スペースキーを押してもう一度ゲームをする', GRAY, WHITE, WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 180)
+                    pygame.display.update()
+
+                    game_over = True
+
+                    while game_over:
+                        bingo = None
+
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                game_over = False
+                                running = False
+                            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                                game_over = False
+                                display_surface.fill(BLACK)
+                                bingo = Bingo()
     
     pygame.display.update()
     
