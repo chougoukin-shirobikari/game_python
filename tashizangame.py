@@ -32,6 +32,20 @@ def text_board(font, size, text, color, x, y):
 
 text_board('NotoSansJP-Regular.ttf', 50, '足し算ゲーム', WHITE, WINDOW_WIDTH // 2, 50)
 
+class Game():
+    def __init__(self):
+        self.lineCreate()
+    
+    def lineCreate(self):
+        pygame.draw.rect(display_surface, WHITE, (50, 120, 500, 150), 3)
+        pygame.draw.rect(display_surface, WHITE, (25, 305, 100, 150), 3)
+        pygame.draw.rect(display_surface, WHITE, (175, 305, 100, 150), 3)
+        pygame.draw.rect(display_surface, WHITE, (325, 305, 100, 150), 3)
+        pygame.draw.rect(display_surface, WHITE, (475, 305, 100, 150), 3)
+
+
+game = Game()
+
 
 running = True
 
