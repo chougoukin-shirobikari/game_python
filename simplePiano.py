@@ -27,6 +27,11 @@ def text_board(font, size, text, color, x, y):
 
 text_board('NotoSansJP-Regular.ttf', 50, 'シンプルなピアノ', WHITE, WINDOW_WIDTH // 2 , 50)
 
+pygame.draw.rect(display_surface, WHITE, (0, WINDOW_HEIGHT // 2, WINDOW_WIDTH, WINDOW_HEIGHT // 2))
+
+for c in range(8):
+    pygame.draw.rect(display_surface, BLACK, (6 + (WINDOW_WIDTH // 8 * c), WINDOW_HEIGHT // 2, WINDOW_WIDTH // 8 - 10, WINDOW_HEIGHT // 2 - 10), 2)
+
 
 running = True
 
