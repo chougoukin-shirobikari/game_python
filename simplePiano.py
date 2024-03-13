@@ -18,6 +18,8 @@ display_surface.fill(BLACK)
 FPS = 60
 clock = pygame.time.Clock()
 
+sound = ['ド', 'レ', 'ミ', 'ファ', 'ソ', 'ラ', 'シ', 'ド']
+
 def text_board(font, size, text, color, x, y):
     font = pygame.font.Font(font, size)
     textsurf = font.render(text, True, color)
@@ -31,6 +33,9 @@ pygame.draw.rect(display_surface, WHITE, (0, WINDOW_HEIGHT // 2, WINDOW_WIDTH, W
 
 for c in range(8):
     pygame.draw.rect(display_surface, BLACK, (6 + (WINDOW_WIDTH // 8 * c), WINDOW_HEIGHT // 2, WINDOW_WIDTH // 8 - 10, WINDOW_HEIGHT // 2 - 10), 2)
+
+for c in range(8):
+    text_board('NotoSansJP-Regular.ttf', 30, sound[c], BLACK, 6 + (WINDOW_WIDTH // 8 * c) + 35 , WINDOW_HEIGHT // 2 + 100)
 
 
 running = True
