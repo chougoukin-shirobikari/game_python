@@ -1,0 +1,42 @@
+import pygame
+
+
+pygame.init()
+
+WINDOW_WIDTH = 500
+WINDOW_HEIGHT = 500
+
+display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+
+pygame.display.set_caption('〇×ゲーム')
+
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+
+LINE_WIDTH = 5
+
+display_surface.fill(BLACK)
+
+pygame.draw.rect(display_surface, WHITE, (100, 100, 300, 300), LINE_WIDTH)
+
+pygame.draw.line(display_surface, WHITE, (200, 100), (200, 399), LINE_WIDTH)
+pygame.draw.line(display_surface, WHITE, (300, 100), (300, 399), LINE_WIDTH)
+pygame.draw.line(display_surface, WHITE, (100, 200), (399, 200), LINE_WIDTH)
+pygame.draw.line(display_surface, WHITE, (100, 300), (399, 300), LINE_WIDTH)
+
+FPS = 60
+clock = pygame.time.Clock()
+
+
+running = True
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+    
+    pygame.display.update()
+
+    clock.tick(FPS)
+
+pygame.quit()
