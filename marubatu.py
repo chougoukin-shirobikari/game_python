@@ -27,6 +27,23 @@ pygame.draw.line(display_surface, WHITE, (100, 300), (399, 300), LINE_WIDTH)
 FPS = 60
 clock = pygame.time.Clock()
 
+def init():
+    title_font = pygame.font.SysFont('hg丸ｺﾞｼｯｸmpro', 50)
+    title = title_font.render("〇×ゲーム", True, WHITE)
+    title_font_rect = title.get_rect()
+    title_font_rect.center = (WINDOW_WIDTH // 2, 50)
+    display_surface.blit(title, title_font_rect)
+
+init()
+
+game = [[''] * 3 for _ in range(3)]
+
+def mouseCheck(x, y):
+    mouse_click_y, mouse_click_x = y // 100, x // 100
+    mouse_click_y -= 1
+    mouse_click_x -= 1
+    print(mouse_click_y, mouse_click_x)
+
 
 running = True
 
@@ -34,6 +51,11 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouseX = event.pos[0]
+            mouseY = event.pos[1]
+            mouseCheck(mouseX, mouseY)
+            
     
     pygame.display.update()
 
