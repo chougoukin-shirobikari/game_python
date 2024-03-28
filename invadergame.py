@@ -59,6 +59,11 @@ class Player:
                 self.shot_y -= self.shotSpeed
             
             pygame.draw.circle(screen, WHITE, (self.shot_x, self.shot_y), self.shotSize)
+    
+    def shotPosition(self):
+        if self.shotOn:
+            return (self.shot_x, self.shot_y)
+        return False
 
 class Enemy:
     def __init__(self, x, y, move_x):
@@ -81,12 +86,26 @@ class Enemy:
             self.y += self.move_y
             self.move_x = -self.move_x
     
+    def shotCollisionCheck(self, shot_position_x, shot_position_y):
+        if self.x <= shot_position_x <= self.x + self.width and self.y <= shot_position_y <= self.y + self.height:
+            return True
+        return False
+    
     def gameOverCheck(self):
         return self.y >= WINDOW_HEIGHT - 50
 
-enemy = Enemy(WINDOW_WIDTH - 50, 0, -5)
-
 player = Player(WINDOW_WIDTH // 2 - 25, WINDOW_HEIGHT - 50)
+
+milliseconds_delay = 3000
+enemy_event = pygame.USEREVENT + 0
+pygame.time.set_timer(enemy_event, milliseconds_delay)
+
+enemy_move_x = -5
+
+enemy_list = [Enemy(WINDOW_WIDTH - 50, 0, enemy_move_x)]
+
+def make_enemy():
+    enemy_list.append(Enemy(WINDOW_WIDTH - 50, 0, enemy_move_x))
 
 
 running = True
@@ -97,6 +116,8 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == enemy_event:
+            make_enemy()
 
     keys = pygame.key.get_pressed()
 
@@ -109,15 +130,25 @@ while running:
         player.shot()
     
     player.shotUpdate(display_surface)
+
+    position = player.shotPosition()
+
+    if position:
+        shot_position_x, shot_position_y = position
+        for e in enemy_list:   
+            enemy_list = [e for e in enemy_list if not e.shotCollisionCheck(shot_position_x, shot_position_y)]
     
     player.draw(display_surface)
 
-    enemy.draw(display_surface)
+    for e in enemy_list:
+        e.draw(display_surface)
 
-    enemy.update()
+    for e in enemy_list:
+        e.update()
 
-    if enemy.gameOverCheck():
-        running = False
+    for e in enemy_list:
+        if e.gameOverCheck():
+            running = False
 
     pygame.display.update()
     
