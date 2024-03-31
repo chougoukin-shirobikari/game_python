@@ -65,6 +65,8 @@ game_text(game_choice)
 def janken_match(player_choice):
     global gamePlaying
 
+    display_surface.fill(BLACK)
+
     display_surface.blit(*player_dict[player_choice])
 
     opponent_choice = random.choice(['gu', 'choki', 'pa'])
@@ -85,6 +87,8 @@ def janken_match(player_choice):
     elif player_choice == opponent_choice:
         display_surface.blit(draw, draw_rect)
 
+    game_text(continue_choice)
+
     gamePlaying = False
 
 
@@ -104,6 +108,13 @@ while running:
                     janken_match('choki')
                 if choice_pa_rect.collidepoint(mouse_x, mouse_y):
                     janken_match('pa')
+            else:
+                if continue_rect.collidepoint(mouse_x, mouse_y):
+                    gamePlaying = True
+                    display_surface.fill(BLACK)
+                    game_text(game_choice)
+                if quit_rect.collidepoint(mouse_x, mouse_y):
+                    running = False
     
     pygame.display.update()
     
