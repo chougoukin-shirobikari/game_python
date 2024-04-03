@@ -27,6 +27,9 @@ class Game:
         self.typing_text = []
         self.key_input_index = 0
 
+        self.correct_number = 0
+        self.wrong_number = 0
+
         pygame.draw.rect(display_surface, WHITE, (50, 80, WINDOW_WIDTH - 100, 250), 5)
 
         self.point, self.point_rect = self.text_board('NotoSansJP-Regular.ttf', 25, "正解した文字数：", WHITE)
@@ -47,6 +50,19 @@ class Game:
         textsurf_rect = textsurf.get_rect()
 
         return (textsurf, textsurf_rect)
+    
+    def score_text_create(self):
+        pygame.draw.rect(display_surface, BLACK, (self.point_rect.x + self.point_rect.width + 10, self.point_rect.y, 50, 50))
+        pygame.draw.rect(display_surface, BLACK, (self.missing_rect.x + self.missing_rect.width + 10, self.missing_rect.y, 50, 50))
+
+        correct, correct_rect = self.text_board('NotoSansJP-Regular.ttf', 25, str(self.correct_number), WHITE)
+        wrong, wrong_rect = self.text_board('NotoSansJP-Regular.ttf', 25, str(self.wrong_number), WHITE)
+
+        correct_rect.topleft = (self.point_rect.x + self.point_rect.width + 10, self.point_rect.y)
+        wrong_rect.topleft = (self.missing_rect.x + self.missing_rect.width + 10, self.missing_rect.y)
+
+        display_surface.blit(correct, correct_rect)
+        display_surface.blit(wrong, wrong_rect)
     
     def input_key_now(self, s):
         pygame.draw.rect(display_surface, BLACK, (480, 365, 80, 80))
@@ -74,8 +90,12 @@ class Game:
             self.typing_text[self.key_input_index] = ''
             self.key_input_index += 1
         
-        pygame.draw.rect(display_surface, BLACK, (60, 90, WINDOW_WIDTH - 120, 230))
-        self.display_typing_text()
+            pygame.draw.rect(display_surface, BLACK, (60, 90, WINDOW_WIDTH - 120, 230))
+            self.display_typing_text()
+
+            self.correct_number += 1
+        else:
+            self.wrong_number += 1
 
 game = Game()
 
@@ -97,6 +117,8 @@ while running:
             else:
                 game.input_key_now(pygame.key.name(event.key))
                 game.key_input_check(pygame.key.name(event.key))
+            
+            game.score_text_create()
     
     pygame.display.update()
     
