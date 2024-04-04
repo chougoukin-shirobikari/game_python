@@ -43,6 +43,8 @@ class Game:
         display_surface.blit(self.point, self.point_rect)
         display_surface.blit(self.missing, self.missing_rect)
         display_surface.blit(self.key_input, self.key_input_rect)
+
+        self.score_text_create()
     
     def text_board(self, font, size, text, color):
         font = pygame.font.Font(font, size)
@@ -96,6 +98,16 @@ class Game:
             self.correct_number += 1
         else:
             self.wrong_number += 1
+    
+    def gameInitCheck(self):
+        if self.key_input_index == len(self.typing_text):
+            self.key_input_index = 0
+            self.typing_text = []
+            self.correct_number = self.wrong_number = 0
+
+            self.input_key_now('')
+            self.alphabet_create()
+            self.display_typing_text()
 
 game = Game()
 
@@ -117,6 +129,8 @@ while running:
             else:
                 game.input_key_now(pygame.key.name(event.key))
                 game.key_input_check(pygame.key.name(event.key))
+            
+            game.gameInitCheck()
             
             game.score_text_create()
     
