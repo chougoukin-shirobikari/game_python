@@ -79,19 +79,26 @@ class StopWatch():
         seconds = int(time_check[:4]) % 60
         minutes = int(time_check[:4]) // 60
 
-        seconds = str(seconds).zfill(2)
-        minutes = str(minutes).zfill(2)
+        seconds0, seconds1 = str(seconds).zfill(2)
+        minutes0, minutes1 = str(minutes).zfill(2)
 
         self.milliseconds0, self.milliseconds0_rect = self.text_board('NotoSansJP-Regular.ttf', 95, milliseconds0, WHITE)
         self.milliseconds1, self.milliseconds1_rect = self.text_board('NotoSansJP-Regular.ttf', 95, milliseconds1, WHITE)
         self.milliseconds2, self.milliseconds2_rect = self.text_board('NotoSansJP-Regular.ttf', 95, milliseconds2, WHITE)
-        self.seconds0, self.seconds0_rect = self.text_board('NotoSansJP-Regular.ttf', 95, seconds[0], WHITE)
-        self.seconds1, self.seconds1_rect = self.text_board('NotoSansJP-Regular.ttf', 95, seconds[1], WHITE)
-        self.minutes0, self.minutes0_rect = self.text_board('NotoSansJP-Regular.ttf', 95, minutes[0], WHITE)
-        self.minutes1, self.minutes1_rect = self.text_board('NotoSansJP-Regular.ttf', 95, minutes[1], WHITE)
+        self.seconds0, self.seconds0_rect = self.text_board('NotoSansJP-Regular.ttf', 95, seconds0, WHITE)
+        self.seconds1, self.seconds1_rect = self.text_board('NotoSansJP-Regular.ttf', 95, seconds1, WHITE)
+        self.minutes0, self.minutes0_rect = self.text_board('NotoSansJP-Regular.ttf', 95, minutes0, WHITE)
+        self.minutes1, self.minutes1_rect = self.text_board('NotoSansJP-Regular.ttf', 95, minutes1, WHITE)
 
         self.stopWatchTimeRect()
         self.stopWatchDisplay()
+
+        if minutes == 10:
+            self.timeStart = False
+            self.drawLines(WHITE)
+            self.playButtonDisplay()
+            self.update_time = 0
+            return
     
     def text_board(self, font, size, text, color):
         font = pygame.font.Font(font, size)
