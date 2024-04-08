@@ -66,6 +66,32 @@ class StopWatch():
             display_surface.blit(self.stop, self.stop_rect)
         else:
             display_surface.blit(self.start, self.start_rect)
+        
+    def stopWatchUpdate(self):
+        self.stopWatchFill()
+        time_check = pygame.time.get_ticks() - self.update_time
+        
+        time_check = str(time_check).zfill(7)
+
+        milliseconds0 = time_check[4]
+        milliseconds1 = time_check[5]
+        milliseconds2 = time_check[6]
+        seconds = int(time_check[:4]) % 60
+        minutes = int(time_check[:4]) // 60
+
+        seconds = str(seconds).zfill(2)
+        minutes = str(minutes).zfill(2)
+
+        self.milliseconds0, self.milliseconds0_rect = self.text_board('NotoSansJP-Regular.ttf', 95, milliseconds0, WHITE)
+        self.milliseconds1, self.milliseconds1_rect = self.text_board('NotoSansJP-Regular.ttf', 95, milliseconds1, WHITE)
+        self.milliseconds2, self.milliseconds2_rect = self.text_board('NotoSansJP-Regular.ttf', 95, milliseconds2, WHITE)
+        self.seconds0, self.seconds0_rect = self.text_board('NotoSansJP-Regular.ttf', 95, seconds[0], WHITE)
+        self.seconds1, self.seconds1_rect = self.text_board('NotoSansJP-Regular.ttf', 95, seconds[1], WHITE)
+        self.minutes0, self.minutes0_rect = self.text_board('NotoSansJP-Regular.ttf', 95, minutes[0], WHITE)
+        self.minutes1, self.minutes1_rect = self.text_board('NotoSansJP-Regular.ttf', 95, minutes[1], WHITE)
+
+        self.stopWatchTimeRect()
+        self.stopWatchDisplay()
     
     def text_board(self, font, size, text, color):
         font = pygame.font.Font(font, size)
@@ -91,6 +117,15 @@ class StopWatch():
         display_surface.blit(self.seconds1, self.seconds1_rect)
         display_surface.blit(self.minutes0, self.minutes0_rect)
         display_surface.blit(self.minutes1, self.minutes1_rect)
+
+    def stopWatchFill(self):
+        pygame.draw.rect(display_surface, BLACK, (530, WINDOW_HEIGHT - 175 - self.milliseconds0_rect.height, 80, 120))
+        pygame.draw.rect(display_surface, BLACK, (640, WINDOW_HEIGHT - 175 - self.milliseconds1_rect.height, 80, 120))
+        pygame.draw.rect(display_surface, BLACK, (750, WINDOW_HEIGHT - 175 - self.milliseconds2_rect.height, 80, 120))
+        pygame.draw.rect(display_surface, BLACK, (290, WINDOW_HEIGHT - 175 - self.seconds0_rect.height, 80, 120))
+        pygame.draw.rect(display_surface, BLACK, (400, WINDOW_HEIGHT - 175 - self.seconds1_rect.height, 80, 120))
+        pygame.draw.rect(display_surface, BLACK, (50, WINDOW_HEIGHT - 175 - self.minutes0_rect.height, 80, 120))
+        pygame.draw.rect(display_surface, BLACK, (160, WINDOW_HEIGHT - 175 - self.minutes1_rect.height, 80, 120))
     
     def clickCheck(self, x, y):
         if self.playButton.collidepoint(x, y):
@@ -98,12 +133,14 @@ class StopWatch():
                 self.timeStart = True
                 self.playButtonDisplay()
                 self.drawLines(BLUE)
+                self.update_time = pygame.time.get_ticks()
+
             else:
                 self.timeStart = False
                 self.playButtonDisplay()
                 self.drawLines(WHITE)
+                self.upate_time = 0
         
-
 stop_watch = StopWatch()
 
 
@@ -117,6 +154,9 @@ while running:
             mouse_x = event.pos[0]
             mouse_y = event.pos[1]
             stop_watch.clickCheck(mouse_x, mouse_y)
+    
+    if stop_watch.timeStart:
+        stop_watch.stopWatchUpdate()
     
     pygame.display.update()
     
