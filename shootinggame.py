@@ -1,4 +1,4 @@
-import pygame, math
+import pygame, math, gc
 
 
 pygame.init()
@@ -37,6 +37,8 @@ class Object():
 class Player(Object):
     def __init__(self, x, y, color):
         super().__init__(x, y, color)
+
+        self.shotList = []
     
     def move(self, dx, dy):
         self.x += dx * 8
@@ -59,6 +61,25 @@ class Player(Object):
             self.y = WINDOW_HEIGHT - self.height
         else:
             self.y += dy
+    
+    def shot(self):
+        self.shotList.append(Shot(self.x + self.width + 5, self.y + self.height // 2, WHITE, 5, 10))
+
+class Shot(Object):
+    def __init__(self, x, y, color, shotSize, shotSpeed):
+        super().__init__(x, y, color)
+
+        self.shotSize = shotSize
+        self.shotSpeed = shotSpeed
+    
+    def shotUpdate(self):
+        super.draw()
+
+        if 0 < self.x + self.shotSpeed < WINDOW_WIDTH:
+            self.x += self.shotSpeed
+            return self
+        else:
+            return False
 
 player = Player(10, 50, WHITE)
 
