@@ -40,6 +40,20 @@ class Player(Object):
 
         self.shotList = []
     
+    def shotCheck(self):
+        temp = []
+        delete_temp = []
+
+        for i in range(len(self.shotList)):
+            if self.shotList[i].shotUpdate():
+                temp.append(self.shotList[i])
+            else:
+                delete_temp.append(self.shotList[i])
+            
+        self.shotList = temp
+        del delete_temp
+        gc.collect()
+    
     def move(self, dx, dy):
         self.x += dx * 8
         self.y += dy * 8
@@ -73,7 +87,7 @@ class Shot(Object):
         self.shotSpeed = shotSpeed
     
     def shotUpdate(self):
-        super.draw()
+        super().draw()
 
         if 0 < self.x + self.shotSpeed < WINDOW_WIDTH:
             self.x += self.shotSpeed
@@ -97,6 +111,10 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_s:
+                player.shot()
+                print(player.shotList)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 player_up = True
@@ -129,6 +147,8 @@ while running:
         dx = -1
     
     player.move(dx, dy)
+
+    player.shotCheck()
     
     player.draw()
 
