@@ -31,12 +31,13 @@ class Object():
         self.type = type
         self.width = 50
         self.height = 20
+        self.rect = None
     
     def draw(self):
         if self.type == 0:
-            pygame.draw.rect(display_surface, self.color, (self.x, self.y, self.width, self.height))
+            self.rect = pygame.draw.rect(display_surface, self.color, (self.x, self.y, self.width, self.height))
         elif self.type == 1:
-            pygame.draw.circle(display_surface, self.color, (self.x, self.y), self.shotSize)
+            self.rect = pygame.draw.circle(display_surface, self.color, (self.x, self.y), self.shotSize)
 
 class Player(Object):
     def __init__(self, x, y, color, type):
@@ -82,6 +83,9 @@ class Player(Object):
     
     def shot(self):
         self.shotList.append(Shot(self.x + self.width + 5, self.y + self.height // 2, WHITE, 1, 5, 10))
+    
+    def returnshotList(self):
+        return self.shotList
 
 class Shot(Object):
     def __init__(self, x, y, color, type, shotSize, shotSpeed):
@@ -134,6 +138,8 @@ pygame.time.set_timer(enemy_shot_event, 2000)
 
 enemy_list = []
 
+enemy_delete_list = []
+
 def enemy_move_check(e_list):
     temp = []
     delete_temp = []
@@ -149,6 +155,34 @@ def enemy_move_check(e_list):
     gc.collect()
     
     return e_list
+
+def player_and_enemy_collision(player, enemy):
+    if player.rect.colliderect(enemy.rect):
+        return True
+    return False
+
+def playerShot_and_enemy_collision(player, enemy):
+    for playerShot in player.returnshotList():
+        if playerShot.rect.colliderect(enemy.rect):
+            enemy_delete_list.append(enemy)
+
+            return True
+    return False
+
+def player_and_enemyShot_collision(player, enemy):
+    if enemy.shot:
+        if player.rect.colliderect(enemy.shot.rect):
+            return True
+    return False
+
+def delete_shotEnemy(enemy_delete_list):
+    delete_temp = []
+    for e_delete in enemy_delete_list:
+        if not e_delete.shotOn:
+            delete_temp.append(e_delete)
+    
+    del delete_temp
+    gc.collect()
 
 player_up = False
 player_down = False
@@ -199,6 +233,10 @@ while running:
 
     [e.shotCheck() for e in enemy_list]
 
+    [e_delete.shotCheck() for e_delete in enemy_delete_list if e_delete.shotOn]
+
+    delete_shotEnemy(enemy_delete_list)
+
     enemy_list = enemy_move_check(enemy_list)
     
     
@@ -219,6 +257,20 @@ while running:
     player.shotCheck()
     
     player.draw()
+
+    if any([player_and_enemy_collision(player, e) for e in enemy_list]):
+        print('敵とぶつかった')
+        running = False
+    
+    if any([player_and_enemyShot_collision(player, e) for e in enemy_list]):
+        print('敵のショットとぶつかった')
+        running = False
+    
+    if any([player_and_enemyShot_collision(player, e_delete) for e_delete in enemy_delete_list]):
+        print('すでに倒された敵のショットとぶつかった')
+        running = False
+    
+    enemy_list = [e for e in enemy_list if not playerShot_and_enemy_collision(player, e)]
 
     pygame.display.update()
     
