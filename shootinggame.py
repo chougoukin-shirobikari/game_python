@@ -140,6 +140,29 @@ enemy_list = []
 
 enemy_delete_list = []
 
+background = []
+
+score = [0] * 3
+
+def make_background():
+    while True:
+        x, y = random.randrange(1, WINDOW_WIDTH), random.randrange(1, WINDOW_HEIGHT)
+        if [x, y] not in background:
+            background.append([x, y])
+            break
+
+for _ in range(30):
+    make_background()
+
+def blit_background():
+    for i in range(len(background)):
+        pygame.draw.circle(display_surface, YELLOW, (background[i][0], background[i][1]), 1)
+
+        if background[i][0] - 1 >= 1:
+            background[i][0] -= 1
+        else:
+            background[i][0] = WINDOW_WIDTH - 1
+
 def enemy_move_check(e_list):
     temp = []
     delete_temp = []
@@ -165,7 +188,7 @@ def playerShot_and_enemy_collision(player, enemy):
     for playerShot in player.returnshotList():
         if playerShot.rect.colliderect(enemy.rect):
             enemy_delete_list.append(enemy)
-
+            score[enemy.enemy_type] += 1
             return True
     return False
 
@@ -194,14 +217,12 @@ running = True
 
 while running:
     display_surface.fill(BLACK)
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_s:
                 player.shot()
-                print(player.shotList)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 player_up = True
@@ -226,6 +247,8 @@ while running:
         if event.type == enemy_shot_event:
             for e in enemy_list:
                 e.shotOn()
+    
+    blit_background()
 
     [e.draw() for e in enemy_list]
 
