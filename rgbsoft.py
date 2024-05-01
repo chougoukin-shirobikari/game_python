@@ -58,6 +58,22 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            if event.button == 1:
+                if red_button.collidepoint((mouse_x, mouse_y)):
+                    print('Red用のボタンが左クリックされた！')
+                if green_button.collidepoint((mouse_x, mouse_y)):
+                    print('Green用のボタンが左クリックされた！')
+                if blue_button.collidepoint((mouse_x, mouse_y)):
+                    print('Blue用のボタンが左クリックされた！')
+            elif event.button == 3:
+                if red_button.collidepoint((mouse_x, mouse_y)):
+                    print('Red用のボタンが右クリックされた！')
+                if green_button.collidepoint((mouse_x, mouse_y)):
+                    print('Green用のボタンが右クリックされた！')
+                if blue_button.collidepoint((mouse_x, mouse_y)):
+                    print('Blue用のボタンが右クリックされた！')
     
     pygame.display.update()
     
