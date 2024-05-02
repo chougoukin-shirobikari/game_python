@@ -51,6 +51,11 @@ def button_number_update():
 
 button_number_update()
 
+def display_color():
+    pygame.draw.rect(display_surface, (red_button_number, green_button_number, blue_button_number), (WINDOW_WIDTH // 2 - 124, WINDOW_HEIGHT // 2 - 199, 248, 248))
+
+display_color()
+
 
 running = True
 
@@ -62,18 +67,34 @@ while running:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             if event.button == 1:
                 if red_button.collidepoint((mouse_x, mouse_y)):
-                    print('Red用のボタンが左クリックされた！')
+                    red_button_number -= 5
+                    if red_button_number < 0:
+                        red_button_number = 0
                 if green_button.collidepoint((mouse_x, mouse_y)):
-                    print('Green用のボタンが左クリックされた！')
+                    green_button_number -= 5
+                    if green_button_number < 0:
+                        green_button_number = 0
                 if blue_button.collidepoint((mouse_x, mouse_y)):
-                    print('Blue用のボタンが左クリックされた！')
+                    blue_button_number -= 5
+                    if blue_button_number < 0:
+                        blue_button_number = 0
             elif event.button == 3:
                 if red_button.collidepoint((mouse_x, mouse_y)):
-                    print('Red用のボタンが右クリックされた！')
+                    red_button_number += 5
+                    if red_button_number > 255:
+                        red_button_number = 255
                 if green_button.collidepoint((mouse_x, mouse_y)):
-                    print('Green用のボタンが右クリックされた！')
+                    green_button_number += 5
+                    if green_button_number > 255:
+                        green_button_number = 255
                 if blue_button.collidepoint((mouse_x, mouse_y)):
-                    print('Blue用のボタンが右クリックされた！')
+                    blue_button_number += 5
+                    if blue_button_number > 255:
+                        blue_button_number = 255
+    
+            button_number_update()
+    
+            display_color()
     
     pygame.display.update()
     
