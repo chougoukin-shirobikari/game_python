@@ -1,4 +1,4 @@
-import pygame
+import pygame, random
 
 
 pygame.init()
@@ -39,9 +39,17 @@ class Bingo():
         self.bingo_display()
 
     def bingo_display(self):
+        bingo_numbers = product_bingo_numbers()
         for y in range(5):
             for x in range(5):
-                pygame.draw.rect(display_surface, WHITE, (20 + 75 * x, 160 + 75 * y, 70, 70), 1)
+                number = str(bingo_numbers.pop(random.randrange(len(bingo_numbers))))
+                rect = pygame.draw.rect(display_surface, WHITE, (20 + 75 * x, 160 + 75 * y, 70, 70), 1)
+                if y == x == 2:
+                    number = 'Free'
+                    pygame.draw.rect(display_surface, LemonChiffon, (rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2))
+                    text_board('NotoSansJP-Regular.ttf', 30, number, GRAY, None, rect.centerx, rect.centery)
+                else:
+                    text_board('NotoSansJP-Regular.ttf', 30, number, WHITE, None, rect.centerx, rect.centery)
 
 def product_bingo_numbers():
     bingo_numbers = []
