@@ -27,7 +27,7 @@ class Bingo():
     def __init__(self):
         pygame.draw.rect(display_surface, WHITE, (10, 150, 390, 390), 1)
         pygame.draw.rect(display_surface, WHITE, (425, 200, 150, 150), 1)
-        pygame.draw.rect(display_surface, WHITE, (410, 425, 180, 255), 1)
+        pygame.draw.rect(display_surface, WHITE, (410, 425, 180, 225), 1)
         
         self.number_button = pygame.draw.rect(display_surface, WHITE, (30, WINDOW_HEIGHT - 125, 350, 80), 1)
 
@@ -38,6 +38,12 @@ class Bingo():
 
         self.bingo_display()
 
+        self.bingo_number_gray_display = {}
+
+        self.record_the_bingo_numbers()
+
+        self.not_choosed_numbers = product_bingo_numbers()
+
     def bingo_display(self):
         bingo_numbers = product_bingo_numbers()
         for y in range(5):
@@ -46,10 +52,22 @@ class Bingo():
                 rect = pygame.draw.rect(display_surface, WHITE, (20 + 75 * x, 160 + 75 * y, 70, 70), 1)
                 if y == x == 2:
                     number = 'Free'
-                    pygame.draw.rect(display_surface, LemonChiffon, (rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2))
-                    text_board('NotoSansJP-Regular.ttf', 30, number, GRAY, None, rect.centerx, rect.centery)
+                    self.change_bingo_number(rect, number)
                 else:
                     text_board('NotoSansJP-Regular.ttf', 30, number, WHITE, None, rect.centerx, rect.centery)
+    
+    def change_bingo_number(self, rect, num, rect_color=LemonChiffon, num_color=GRAY):
+        pygame.draw.rect(display_surface, rect_color, (rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2))
+        text_board('NotoSansJP-Regular.ttf', 30, str(num), num_color, None, rect.centerx, rect.centery)
+    
+    def record_the_bingo_numbers(self):
+        bingo_numbers = product_bingo_numbers()
+        for y in range(10):
+            for x in range(8):
+                if bingo_numbers:
+                    number = bingo_numbers.pop(0)
+                    text_board('NotoSansJP-Regular.ttf', 15, str(number), WHITE, None, 430 + 20 * x, 445 + 20 * y)
+                    self.bingo_number_gray_display[number] = ['NotoSansJP-Regular.ttf', 15, str(number), GRAY, None, 430 + 20 * x, 445 + 20 * y]
 
 def product_bingo_numbers():
     bingo_numbers = []
@@ -76,6 +94,13 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            if bingo.number_button.collidepoint(mouse_x, mouse_y):
+                number = str(bingo.not_choosed_numbers.pop(random.randrange(len(bingo.not_choosed_numbers))))
+                pygame.draw.rect(display_surface, BLACK, (426, 201, 148, 148))
+                text_board('NotoSansJP-Regular.ttf', 100, str(number), WHITE, None, 500, 270)
+                text_board(*bingo.bingo_number_gray_display[int(number)])
     
     pygame.display.update()
     
