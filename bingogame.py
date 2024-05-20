@@ -49,8 +49,6 @@ class Bingo():
         self.bingo_game = [[False] * 5 for _ in range(5)]
         self.bingo_game[2][2] = True
 
-        [print(i) for i in self.bingo_game]
-
     def bingo_display(self):
         bingo_numbers = product_bingo_numbers()
         for y in range(5):
@@ -88,7 +86,6 @@ class Bingo():
                 if n == number:
                     self.change_bingo_number(r, n)
                     self.bingo_game[y][x] = True
-                    [print(i) for i in self.bingo_game]
     
     def check_bingo(self):
         check = False
