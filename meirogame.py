@@ -40,6 +40,7 @@ class Maze():
         self.wall = []
         self.gate = []
         self.key = []
+        self.goal = None
 
         self.createMaze()
     
@@ -55,7 +56,7 @@ class Maze():
                 elif choosed_maze[y][x] == 'x':
                     self.wall.append(pygame.draw.rect(display_surface, GRAY, (self.x + 30 * x, self.y + 30 * y, 30, 30)))
                 elif choosed_maze[y][x] == 'G':
-                    pygame.draw.rect(display_surface, RED, (self.x + 30 * x, self.y + 30 * y, 30, 30))
+                    self.goal = pygame.draw.rect(display_surface, RED, (self.x + 30 * x, self.y + 30 * y, 30, 30))
                     text_board('NotoSansJP-Regular.ttf', 10, 'ゴール', BLACK, None, self.x + 30 * x + 15, self.y + 30 * y + 15)
                 elif choosed_maze[y][x] == 'Y':
                     self.key.append(pygame.draw.rect(display_surface, YELLOW, (self.x + 30 * x, self.y + 30 * y, 30, 30)))
@@ -70,6 +71,7 @@ class Player():
         self.x = self.maze.x + 30
         self.y = self.maze.y + 30
         self.player_key = 0
+        self.goal_check = False
         self.player = pygame.draw.rect(display_surface, STEELBLUE, (self.x, self.y, 30, 30))
     
     def draw(self, x, y):
@@ -91,6 +93,9 @@ class Player():
                 self.player_key -= 1
                 delete_map.append(g)
         
+        if self.maze.goal.collidepoint(self.x + x, self.y + y):
+            self.goal_check = True
+        
         pygame.draw.rect(display_surface, WHITE, (self.x, self.y, 30, 30))
 
         self.x += x
@@ -103,8 +108,27 @@ class Player():
                 self.maze.key.pop(self.maze.key.index(d))
             if d in self.maze.gate:
                 self.maze.gate.pop(self.maze.gate.index(d))
-        
-        print(self.player_key)
+    
+    def playerGoalCheck(self):
+        return self.goal_check
+    
+    def playerGoal(self):
+        while self.goal_check:
+            global running
+
+            text_board('NotoSansJP-Regular.ttf', 55, '迷路をクリア！', BLACK, LemonChiffon, WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 - 30)
+            text_board('NotoSansJP-Regular.ttf', 35, 'もう一度プレイ：スペースキーを押す', BLACK, LemonChiffon, WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 50)
+
+            pygame.display.update()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.goal_check = False
+                    running = False
+                
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    display_surface.fill(BLACK)
+                    self.goal_check = False
 
 maze = Maze()
 
@@ -126,6 +150,15 @@ while running:
                 player.draw(30, 0)
             if event.key == pygame.K_LEFT:
                 player.draw(-30, 0)
+    
+    if player.playerGoalCheck():
+        player.playerGoal()
+
+        maze = None
+        player = None
+
+        maze = Maze()
+        player = Player(maze)
     
     pygame.display.update()
     
