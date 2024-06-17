@@ -37,8 +37,13 @@ class Game():
     CHOICE_Y = 305
     CHOICE_PADDING = 150
 
+    CHOICE_WIDTH = 100
+    CHOICE_HEIGHT = 150
+
+    LINE_WIDTH = 3
+
     def __init__(self):
-        self.lineCreate()
+        self.choice1, self.choice2, self.choice3, self.choice4 = self.lineCreate()
 
         self.a = random.randrange(1, 5)
         self.b = random.randrange(1, 6)
@@ -61,11 +66,9 @@ class Game():
     
     def lineCreate(self):
         pygame.draw.rect(display_surface, WHITE, (50, 120, 500, 150), 3)
-        pygame.draw.rect(display_surface, WHITE, (25, 305, 100, 150), 3)
-        pygame.draw.rect(display_surface, WHITE, (175, 305, 100, 150), 3)
-        pygame.draw.rect(display_surface, WHITE, (325, 305, 100, 150), 3)
-        pygame.draw.rect(display_surface, WHITE, (475, 305, 100, 150), 3)
-    
+
+        return [pygame.draw.rect(display_surface, WHITE, (self.CHOICE_X + self.CHOICE_PADDING * c, self.CHOICE_Y, self.CHOICE_WIDTH, self.CHOICE_HEIGHT), self.LINE_WIDTH) for c in range(4)]
+        
     def add(self):
         text_board('NotoSansJP-Regular.ttf', 100, f'{self.a} + {self.b}', WHITE, WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 - 100)
 
@@ -80,6 +83,9 @@ class Game():
         for c in range(4):
             text_board('NotoSansJP-Regular.ttf', 100, f'{self.choice_number[c]}', WHITE, (c * self.CHOICE_PADDING) + self.CHOICE_X + 50, self.CHOICE_Y + 70)
 
+    def clickCheck(self, playerChoiceIndex):
+        print(self.answer, self.choice_number[playerChoiceIndex])
+
 game = Game()
 
 
@@ -91,7 +97,15 @@ while running:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
-                print('左クリックされた！')
+                x, y = event.pos
+                if game.choice1.collidepoint(x, y):
+                    game.clickCheck(0)
+                if game.choice2.collidepoint(x, y):
+                    game.clickCheck(1)
+                if game.choice3.collidepoint(x, y):
+                    game.clickCheck(2)
+                if game.choice4.collidepoint(x, y):
+                    game.clickCheck(3)
     
     pygame.display.update()
     
