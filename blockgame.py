@@ -38,13 +38,35 @@ block = []
 for y in range(5):
     block_x = []
     for x in range(5):
-        block_x.append((BLOCK_DRAW_X + (BLOCK_PADDING + BLOCK_WIDTH) * x, BLOCK_DRAW_Y + (BLOCK_PADDING + BLOCK_HEIGHT) * y, BLOCK_WIDTH, BLOCK_HEIGHT))
+        block_x.append([BLOCK_DRAW_X + (BLOCK_PADDING + BLOCK_WIDTH) * x, BLOCK_DRAW_Y + (BLOCK_PADDING + BLOCK_HEIGHT) * y, BLOCK_WIDTH, BLOCK_HEIGHT,True])
     block.append(block_x)
 
 def block_display():
     for y in range(5):
         for x in range(5):
-            pygame.draw.rect(display_surface, WHITE, block[y][x])
+            block_true = block[y][x][-1]
+            if block_true:
+                block_x = block[y][x][0]
+                block_y = block[y][x][1]
+                block_width = block[y][x][2]
+                block_height = block[y][x][3]
+                pygame.draw.rect(display_surface, WHITE, (block_x, block_y, block_width, block_height))
+
+def block_collision_check():
+    global dy
+
+    for y in range(5):
+        for x in range(5):
+            block_x = block[y][x][0]
+            block_y = block[y][x][1]
+            block_width = block[y][x][2]
+            block_height = block[y][x][3]
+            block_true = block[y][x][4]
+
+            if block_true:
+                if block_x <= ball_x + dx <= block_x + block_width and block_y <= ball_y + dy <= block_y + block_height:
+                    dy = -dy
+                    block[y][x][4] = False
 
 
 running = True
@@ -59,6 +81,8 @@ while running:
     pygame.draw.circle(display_surface, WHITE, (ball_x, ball_y), BALL_RADIUS)
 
     block_display()
+
+    block_collision_check()
 
     if not (BALL_RADIUS <= ball_x + dx <= WINDOW_WIDTH - BALL_RADIUS):
         dx = -dx
