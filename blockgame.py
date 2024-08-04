@@ -27,6 +27,16 @@ display_surface.fill(BLACK)
 FPS = 60
 clock = pygame.time.Clock()
 
+BOARD_WIDTH = 80
+BOARD_HEIGHT = 15
+BOARD_MOVE = 5
+
+board_x = WINDOW_WIDTH // 2
+board_y = WINDOW_HEIGHT - BOARD_HEIGHT
+
+def board_display():
+    pygame.draw.rect(display_surface, WHITE, (board_x, board_y, BOARD_WIDTH, BOARD_HEIGHT))
+
 BLOCK_WIDTH = 60
 BLOCK_HEIGHT = 25
 BLOCK_PADDING = 10
@@ -68,6 +78,12 @@ def block_collision_check():
                     dy = -dy
                     block[y][x][4] = False
 
+def board_collision_check():
+    global dy
+
+    if board_x <= ball_x + dx <= board_x + BOARD_WIDTH and ball_y + dy > WINDOW_HEIGHT - BOARD_HEIGHT:
+        dy = -dy
+
 
 running = True
 
@@ -82,15 +98,29 @@ while running:
 
     block_display()
 
+    board_display()
+
+    board_collision_check()
+
     block_collision_check()
 
     if not (BALL_RADIUS <= ball_x + dx <= WINDOW_WIDTH - BALL_RADIUS):
         dx = -dx
-    if not (BALL_RADIUS <= ball_y + dy <= WINDOW_HEIGHT - BALL_RADIUS):
+    if BALL_RADIUS > ball_y + dy:
         dy = -dy
+    if ball_y + dy > WINDOW_HEIGHT - BOARD_HEIGHT:
+        running = False
 
     ball_x += dx
     ball_y += dy
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        if 0 <= board_x - BOARD_MOVE:
+            board_x -= BOARD_MOVE
+    if keys[pygame.K_RIGHT]:
+        if board_x + BOARD_MOVE <= WINDOW_WIDTH - BOARD_WIDTH:
+            board_x += BOARD_MOVE
 
     pygame.display.update()
 
