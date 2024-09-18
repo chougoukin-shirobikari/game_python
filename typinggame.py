@@ -1,4 +1,4 @@
-import pygame
+import pygame, string, random
 
 
 pygame.init()
@@ -18,8 +18,13 @@ display_surface.fill(BLACK)
 FPS = 60
 clock = pygame.time.Clock()
 
+alphabet_lowercase = string.ascii_lowercase
+alphabet_uppercase = string.ascii_uppercase
+
 class Game():
     def __init__(self):
+        self.typing_text = []
+
         pygame.draw.rect(display_surface, WHITE, (50, 80, WINDOW_WIDTH - 100, 250), 5)
 
         self.point, self.point_rect = self.text_board('NotoSansJP-Regular.ttf', 25, "正解した文字数：", WHITE)
@@ -40,8 +45,30 @@ class Game():
         textsurf_rect = textsurf.get_rect()
 
         return (textsurf, textsurf_rect)
+    
+    def input_key_now(self, s):
+        pygame.draw.rect(display_surface, BLACK, (480, 365, 80, 80))
+        inputKey, inputKey_rect = self.text_board('NotoSansJP-Regular.ttf', 40, s, WHITE)
+        inputKey_rect.center = (WINDOW_WIDTH // 2 + 100, WINDOW_HEIGHT - 100)
+        display_surface.blit(inputKey, inputKey_rect)
+    
+    def alphabet_create(self):
+        for _ in range(10):
+            i = random.randrange(0, 10)
+            if i <= 4:
+                self.typing_text.append(random.choice(alphabet_lowercase))
+            elif i <= 9:
+                self.typing_text.append(random.choice(alphabet_uppercase))
+    
+    def display_typing_text(self):
+        text, text_rect = self.text_board('NotoSansJP-Regular.ttf', 55, ''.join(self.typing_text), WHITE)
+        text_rect.center = (WINDOW_WIDTH // 2, 200)
+        display_surface.blit(text, text_rect)
 
 game = Game()
+
+game.alphabet_create()
+game.display_typing_text()
 
 
 running = True
@@ -50,6 +77,13 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN:
+            if not(97 <= event.key <= 122):
+                continue
+            if pygame.key.get_mods() and pygame.KMOD_SHIFT:
+                game.input_key_now(pygame.key.name(event.key).upper())
+            else:
+                game.input_key_now(pygame.key.name(event.key))
     
     pygame.display.update()
     
