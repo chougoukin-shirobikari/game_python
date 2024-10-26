@@ -1,4 +1,4 @@
-import pygame, math
+import pygame, math, gc
 
 
 pygame.init()
@@ -24,20 +24,39 @@ FPS = 60
 clock = pygame.time.Clock()
 
 class Object():
-    def __init__(self, x, y, color):
+    def __init__(self, x, y, color, type):
         self.x = x
         self.y = y
-
         self.color = color
+        self.type = type
         self.width = 50
         self.height = 20
     
     def draw(self):
-        pygame.draw.rect(display_surface, self.color, (self.x, self.y, self.width, self.height))
+        if self.type == 0:
+            pygame.draw.rect(display_surface, self.color, (self.x, self.y, self.width, self.height))
+        elif self.type == 1:
+            pygame.draw.circle(display_surface, self.color, (self.x, self.y), self.shotSize)
 
 class Player(Object):
-    def __init__(self, x, y, color):
-        super().__init__(x, y, color)
+    def __init__(self, x, y, color, type):
+        super().__init__(x, y, color, type)
+
+        self.shotList = []
+    
+    def shotCheck(self):
+        temp = []
+        delete_temp = []
+
+        for i in range(len(self.shotList)):
+            if self.shotList[i].shotUpdate():
+                temp.append(self.shotList[i])
+            else:
+                delete_temp.append(self.shotList[i])
+        
+        self.shotList = temp
+        del delete_temp
+        gc.collect()
     
     def move(self, dx, dy):
         self.x += dx * 8
@@ -60,8 +79,51 @@ class Player(Object):
             self.y = WINDOW_HEIGHT - self.height
         else:
             self.y += dy
+    
+    def shot(self):
+        self.shotList.append(Shot(self.x + self.width + 5, self.y + self.height // 2, WHITE, 1, 5, 10))
 
-player = Player(10, 50, WHITE)
+class Shot(Object):
+    def __init__(self, x, y, color, type, shotSize, shotSpeed):
+        super().__init__(x, y, color, type)
+
+        self.shotSize = shotSize
+        self.shotSpeed = shotSpeed
+    
+    def shotUpdate(self):
+        super().draw()
+        if 0 < self.x + self.shotSpeed < WINDOW_WIDTH:
+            self.x += self.shotSpeed
+            return self
+        else:
+            return False
+
+class Enemy(Object):
+    def __init__(self, x, y, color, type, enemy_type):
+        super().__init__(x, y, color, type)
+
+        self.enemy_type = enemy_type
+        self.moveSpeed = [1, 2, 3][self.enemy_type]
+        self.shotSpeed = [-5, -8, -10][self.enemy_type]
+        self.shot = None
+    
+    def move(self):
+        if self.x - self.moveSpeed >= -self.width:
+            self.x -= self.moveSpeed
+            return self
+        else:
+            return False
+    
+    def shotOn(self):
+        if self.shot is None:
+            self.shot = Shot(self.x - 5, self.y + self.height // 2, self.color, 1, 5, self.shotSpeed)
+    
+    def shotCheck(self):
+        if self.shot:
+            if not self.shot.shotUpdate():
+                self.shot = None
+
+player = Player(10, 50, WHITE, 0)
 
 player_up = False
 player_down = False
@@ -77,6 +139,9 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_s:
+                player.shot()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 player_up = True
@@ -109,6 +174,8 @@ while running:
         dx = -1
     
     player.move(dx, dy)
+
+    player.shotCheck()
     
     player.draw()
     
