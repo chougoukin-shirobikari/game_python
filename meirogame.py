@@ -30,6 +30,7 @@ def text_board(font, size, text, color, bgColor, x, y):
     textsurf = font.render(text, True, color, bgColor)
     textsurf_rect = textsurf.get_rect()
     textsurf_rect.center = (x, y)
+
     display_surface.blit(textsurf, textsurf_rect)
 
 class Maze():
